@@ -9,6 +9,7 @@ set layout => 'new_main'; # set main layout
 
 our $VERSION = '0.1';
 
+# navigation string
 use constant NAVIGATION => 
     qq(<ul class="box">
     <li><a href="/">Home</a></li> 
@@ -20,6 +21,9 @@ use constant NAVIGATION =>
     <li><a href="/Imprint">Imprint</a></li>
     </ul>);
 
+######################
+### handle a route ###
+######################
 sub route_callback {
     my $route = shift;
     my $template = $route;
@@ -36,7 +40,8 @@ sub route_callback {
     };
 }
 
-my @routes = ("", "About", "CV", "Publications");
-foreach (@routes) { get '/' . $_ => route_callback($_, NAVIGATION); }
+# extract routes from navigation and handle them
+my @routes = NAVIGATION =~ m!<li><a href="/(.*?)">.*?</li>!g;
+get '/' . $_ => route_callback($_, NAVIGATION) for @routes;
 
 true;
