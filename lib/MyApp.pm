@@ -9,7 +9,7 @@ set layout => 'new_main'; # set main layout
 
 our $VERSION = '0.1';
 
-my $NAVIGATION = 
+use constant $NAVIGATION => 
     qq(<ul class="box">
     <li><a href="/">Home</a></li> 
     <li><a href="/About">About</a></li>
