@@ -1,3 +1,4 @@
+# myapp
 package MyApp;
 use Template;
 use Dancer ':syntax';
