@@ -5,4 +5,4 @@ perl:
    - "5.12"
 
 install:
-   cpanm --quiet --notest Template
+   - cpanm --quiet --notest Template
