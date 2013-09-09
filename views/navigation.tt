@@ -1,0 +1,5 @@
+
+<ul class="box">
+ <li id="nav-active"><a href="#">Home</a></li> <!-- Active page (highlighted) -->
+ <li><a href="About">About</a></li>
+</ul>
