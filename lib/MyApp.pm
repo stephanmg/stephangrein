@@ -9,7 +9,7 @@ set layout => 'new_main'; # set main layout
 
 our $VERSION = '0.1';
 
-use constant $NAVIGATION => 
+use constant NAVIGATION => 
     qq(<ul class="box">
     <li><a href="/">Home</a></li> 
     <li><a href="/About">About</a></li>
@@ -22,7 +22,7 @@ use constant $NAVIGATION =>
 
 get '/' => sub {
     my $route = "";
-    my $TEMP = $NAVIGATION;
+    my $TEMP = NAVIGATION;
     $TEMP =~ s!<li>(<a href="/$route">.*?</li>)!<li id="nav-active">$1!;
 
     template 'new_index' => {
@@ -44,12 +44,12 @@ sub callback {
     };
 }
 
-get '/About' => callback("About", $NAVIGATION);
-get '/CV' => callback("CV", $NAVIGATION);
+get '/About' => callback("About", NAVIGATION);
+get '/CV' => callback("CV", NAVIGATION);
 
 get '/About' => sub {
     my $route = "About";
-    my $TEMP = $NAVIGATION;
+    my $TEMP = NAVIGATION;
     $TEMP =~ s!<li>(<a href="/$route">.*?</li>)!<li id="nav-active">$1!;
 
     template "About" => {
