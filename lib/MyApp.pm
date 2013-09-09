@@ -1,4 +1,6 @@
-# myapp
+########################### 
+### www stephangrein de ###
+###########################
 package MyApp;
 use Template;
 use Dancer ':syntax';
@@ -6,10 +8,11 @@ use Dancer::Plugin::SiteMap;
 use Dancer::Plugin::DirectoryView;
 use Dancer::Plugin::Auth::Htpasswd;
 set layout => 'new_main'; # set main layout
-
 our $VERSION = '0.1';
 
-# navigation string
+#########################
+### navigation string ###
+#########################
 use constant NAVIGATION => 
     qq(<ul class="box">
     <li><a href="/">Home</a></li> 
@@ -20,7 +23,6 @@ use constant NAVIGATION =>
     <li><a href="/pub/">Downloads</a></li>
     <li><a href="/Imprint">Imprint</a></li>
     </ul>);
-
 ######################
 ### handle a route ###
 ######################
@@ -39,9 +41,9 @@ sub route_callback {
         };
     };
 }
-
-# extract routes from navigation and handle them
+######################################################
+### extract routes from navigation and handle them ###
+######################################################
 my @routes = NAVIGATION =~ m!<li><a href="/(.*?)">.*?</li>!g;
 get '/' . $_ => route_callback($_, NAVIGATION) for @routes;
-
 true;
