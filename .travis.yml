@@ -7,3 +7,6 @@ perl:
 install:
    - cpanm --quiet --notest Template
    - cpanm --quiet --notest Dancer
+   - cpanm --quiet --notest Dancer::Plugin::SiteMap;
+   - cpanm --quiet --notest Dancer::Plugin::DirectoryView;
+   - cpanm --quiet --notest Dancer::Plugin::Auth::Htpasswd;
