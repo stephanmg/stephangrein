@@ -5,7 +5,11 @@ perl:
    - "5.12"
 
 install:
-   - cpanm -v --notest --installdeps .
+   - cpanm -q -n Template
+   - cpanm -q -n Dancer
+   - cpanm -q -n Dancer::Plugin::SiteMap;
+   - cpanm -q -n Dancer::Plugin::DirectoryView;
+   - cpanm -q -n Dancer::Plugin::Auth::Htpasswd;
 
 notifications:
    recipients:
