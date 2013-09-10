@@ -5,8 +5,11 @@ perl:
    - "5.12"
 
 install:
-   - cpanm --quiet --notest Template
-   - cpanm --quiet --notest Dancer
-   - cpanm --quiet --notest Dancer::Plugin::SiteMap;
-   - cpanm --quiet --notest Dancer::Plugin::DirectoryView;
-   - cpanm --quiet --notest Dancer::Plugin::Auth::Htpasswd;
+   - cpanm -v --notest --installdeps .
+
+notifications:
+   recipients:
+      - stephan@syntaktischer-zucker.de
+   email:
+      on_success: always
+      on_failure: always
