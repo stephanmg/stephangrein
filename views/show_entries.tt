@@ -38,7 +38,14 @@
   <li><em>Unbelievable.  No entries here so far</em>
 <% END %>
 </ul>
-                
 
+<% IF not session.logged_in %>
+      <a href="<% login_url %>">log in</a>
+    <% ELSE %>
+      <a href="<% logout_url %>">log out</a>
+    <% END %>
+    <% IF msg %>
+    <% msg %>
+    <% END %>
             </div> <!-- /content-in -->
                

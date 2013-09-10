@@ -10,6 +10,8 @@ install:
    - cpanm -q -n Dancer::Plugin::SiteMap;
    - cpanm -q -n Dancer::Plugin::DirectoryView;
    - cpanm -q -n Dancer::Plugin::Auth::Htpasswd;
+   - cpanm -q -n DBI
+   - cpanm -q -n File::Slurp
 
 notifications:
    recipients:

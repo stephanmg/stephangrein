@@ -40,7 +40,6 @@ use constant NAVIGATION =>
     <li><a href="/pub/">Downloads</a></li>
     <li><a href="/Imprint">Imprint</a></li>
     <li><a href="/Blog">Blog</a></li>
-    <li><a href="/Blog/login">Login</a></li>
     </ul>);
 
 my $flash;
@@ -71,6 +70,14 @@ sub init_db {
 	my $schema = read_file('./lib/schema.sql');
 	$db->do($schema) or die $db->errstr;
 }
+
+before_template sub {
+	my $tokens = shift;
+	
+	#$tokens->{'css_url'} = request->base . 'css/style.css';
+	$tokens->{'login_url'} = uri_for('/Blog/login');
+	$tokens->{'logout_url'} = uri_for('/Blog/logout');
+};
 
 get '/Blog' => sub {
 	my $db = connect_db();
@@ -117,7 +124,7 @@ any ['get', 'post'] => '/Blog/login' => sub {
 		}
 		else {
 			session 'logged_in' => true;
-			set_flash('You are logged in.');
+			set_flash('You are logged in (admin).');
 			redirect '/Blog';
 		}
 	}
@@ -136,7 +143,7 @@ any ['get', 'post'] => '/Blog/login' => sub {
 get '/Blog/logout' => sub {
 	session->destroy;
 	set_flash('You are logged out.');
-	redirect '/Blog/';
+	redirect '/';
 };
 
 ### check for login status otherwise show login form
@@ -168,7 +175,7 @@ sub route_callback {
 ######################################################
 ### extract routes from navigation and handle them ###
 ######################################################
-my @routes = grep { $_ ne "Blog" and $_ ne "Blog/login" } NAVIGATION =~ m!<li><a href="/(.*?)">.*?</li>!g;
+my @routes = grep { $_ ne "Blog" } NAVIGATION =~ m!<li><a href="/(.*?)">.*?</li>!g;
 get '/' . $_ => route_callback($_, NAVIGATION) for @routes;
 
 true;
