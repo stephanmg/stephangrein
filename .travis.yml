@@ -6,3 +6,4 @@ perl:
 
 install:
    - cpanm --quiet --notest Template
+   - cpanm --quiet --notest Dancer
