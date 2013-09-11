@@ -12,6 +12,8 @@ install:
    - cpanm -q -n Dancer::Plugin::Auth::Htpasswd;
    - cpanm -q -n DBD::SQLite;
    - cpanm -q -n File::Slurp
+   - cpanm -q -n Crypt::SaltedHash;
+
 
 notifications:
    recipients:

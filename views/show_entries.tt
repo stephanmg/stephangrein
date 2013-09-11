@@ -32,7 +32,7 @@
 <ul class=entries>
 <% IF entries.size %>
   <% FOREACH id IN entries.keys.nsort %>
-    <li><h2><% entries.$id.title %></h2><% entries.$id.text %><% entries.$id.author %>
+    <li><h2><% entries.$id.title %> (from: <% entries.$id.datum %>)</h2><% entries.$id.text %><br/>Author: <% entries.$id.author %> -- <%IF session.user %> Action: <a href="<%edit_url%>/<%entries.$id.id%>">Edit</a> / <%END%> <%IF session.user %> <a href="<%delete_url%>/<%entries.$id.id%>">Delete</a> <%END%>
   <% END %>
 <% ELSE %>
   <li><em>Unbelievable.  No entries here so far</em>

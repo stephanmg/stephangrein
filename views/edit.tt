@@ -1,4 +1,4 @@
-  <h2 id="content-title">Lorem ipsum dolor sit amet: we are here <% name_of_page %></h2>
+            <h2 id="content-title">Lorem ipsum dolor sit amet: we are here <% name_of_page %></h2>
             
 
             <!-- Perex -->
@@ -16,22 +16,16 @@
             <hr class="noscreen" />
             
             <div id="content-in">
-<h2>Login</h2>
+<h2>Edit</h2>
 <% IF err %><p class=error><strong>Error:</strong> <% err %><% END %>
-<form action="<% login_url %>" method=post>
+<form action="<% edit_url%>/<%entry_id%>" method=post>
   <dl>
-    <dt>Username:
-    <dd><input type=text name=username>
-    <dt>Password:
-    <dd><input type=password name=password>
-    <dd><input type=submit value=Login>
-  </dl>
+    <dt>Text:
+    <dd><input type=text name=text>
+     <dt>Titel: 
+    <dd><input type=text name=titel>
+   <dd><input type=submit value="Edit entry">
+</dl>
 </form>
 
-            </div> <!-- /content-in -->
-               
-
-
-
-
-
+</div> <!-- /content-in -->

@@ -12,6 +12,7 @@ our $VERSION = '0.1';
 use DBI;
 use File::Slurp;
 use Crypt::SaltedHash;
+use POSIX;
 
 ################
 ### settings ###
@@ -73,8 +74,8 @@ sub init_db {
 	$db->do($schema) or die $db->errstr;
 }
 
-hook 'before' => sub {
-#before_template sub {
+#hook 'before' => sub {
+before_template sub {
 	my $tokens = shift;
 	
 	#$tokens->{'css_url'} = request->base . 'css/style.css';
@@ -84,7 +85,7 @@ hook 'before' => sub {
 
 get '/Blog' => sub {
 	my $db = connect_db();
-	my $sql = 'select id, title, text, author from entries order by id desc';
+	my $sql = 'select id, title, text, author, datum from entries order by id desc';
 	my $sth = $db->prepare($sql) or die $db->errstr;
 	$sth->execute or die $sth->errstr;
     
@@ -94,10 +95,69 @@ get '/Blog' => sub {
 	template 'show_entries.tt' => { 
 		'msg' => get_flash(),
 		'add_entry_url' => uri_for('/Blog/add'),
+    'edit_url' => uri_for('/Blog/edit'),
+    'delete_url' => uri_for('/Blog/delete'),
 		'entries' => $sth->fetchall_hashref('id'),
     'navigation' => $temp
-
 	};
+};
+
+any ['post', 'get'] => '/Blog/delete/*' => sub {
+    my $err;
+   my ($id) = splat;
+    if (not session('user')) {
+        send_error("Not logged in", 401);
+    }   
+
+    	if ( request->method() eq "GET" ) {
+        template 'delete.tt' => {
+            delete_url => uri_for('/Blog/delete'),
+            entry_id => $id
+        };
+    } else {
+        my $dbh = connect_db();
+        my $sql = 'delete from entries where id = ?';
+        my $sth = $dbh->prepare($sql) or die $dbh->errstr;
+        $sth->execute($id);
+        set_flash("Deleted successfully entry no. " . $id);
+        redirect '/Blog';
+    }
+};
+
+any ['get', 'post'] => '/Blog/edit/*' => sub {
+	my $err;
+  my ($id) = splat; # get wildcard id
+    if (not session('user')) {
+        send_error("Not logged in", 401);
+    }   
+
+    	if ( request->method() eq "GET" ) {
+        
+        template 'edit.tt' => {
+            edit_url => uri_for('/Blog/edit'),
+            entry_id => $id
+        };
+    } else {
+        my $dbh = connect_db();
+        my $sql = 'update entries set text=? where id = ?';
+        my $sth = $dbh->prepare($sql) or die $dbh->errstr;
+
+        my $pretext = params->{'text'};
+        $pretext =~ s!:\)!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!g;
+        $pretext =~ s!:\(!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!g;
+        $sth->execute($pretext, $id);
+        if (params->{'titel'} ne "") {
+            $sql = 'update entries set title=? where id = ?';
+            $sth = $dbh->prepare($sql) or die $dbh->errstr;
+            $sth->execute(params->{'titel'}, $id);
+        }
+        $sql = 'update entries set datum=? where id = ?';
+        $sth = $dbh->prepare($sql) or die $dbh->errstr;
+        $sth->execute(localtime . "(last update)", $id);
+
+        set_flash("Entry No. " . $id . " successfully edited");
+        redirect '/Blog';
+    }
 };
 
 post '/Blog/add' => sub {
@@ -106,14 +166,15 @@ post '/Blog/add' => sub {
 	}
 
 	my $db = connect_db();
-	my $sql = 'insert into entries (title, text, author) values (?, ?, ?)';
+	my $sql = 'insert into entries (title, text, author, datum) values (?, ?, ?, ?)';
 	my $sth = $db->prepare($sql) or die $db->errstr;
+  my $now = localtime;
 
     my $pretext = params->{'text'};
-    $pretext =~ s!:\)!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!;
-    $pretext =~ s!:\(!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!;
+    $pretext =~ s!:\)!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!g;
+    $pretext =~ s!:\(!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!g;
 	#$sth->execute(params->{'title'}, params->{'text'}) or die $sth->errstr;
-	$sth->execute(params->{'title'}, $pretext, session('user')) or die $sth->errstr;
+	$sth->execute(params->{'title'}, $pretext, session('user'), $now) or die $sth->errstr;
 
 
 set_flash('New entry posted!');
@@ -144,8 +205,8 @@ any ['get', 'post'] => '/Blog/login' => sub {
         redirect '/Blog';
     } else {
         my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
-        $csh->add('test');
-        if (Crypt::SaltedHash->validate($csh->generate, params->{password})) {
+        $csh->add(params->{password});
+        if (Crypt::SaltedHash->validate($pass, params->{password})) {
     session 'user' => params->{username};
     set_flash("You are logged in (" . session('user') . ")");
     redirect '/Blog';
@@ -164,14 +225,17 @@ any ['get', 'post'] => '/Blog/login' => sub {
 	template 'login.tt' => { 
 		'err' => $err,
     'navigation' => $temp
-	};
+    }, 
+    {
+    layout => "new_main"
+    };
 
 };
 
 get '/Blog/logout' => sub {
 	session->destroy;
 	set_flash('You are logged out.');
-	redirect '/';
+	redirect '/Blog';
 };
 
 ### check for login status otherwise show login form

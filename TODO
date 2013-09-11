@@ -1,5 +1,5 @@
 add more tests
 split up initialize and webapp parts
 cleanup code ... use one db with 2 tables
-new field for comments maybe of blog entries
+new field for comments maybe of blog entries and date entry for posts ...
 fancier layout of entries etc...
