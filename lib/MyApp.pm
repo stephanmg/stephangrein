@@ -20,6 +20,7 @@ set 'database' => './lib/test.db';
 set 'username' => 'admin';
 set 'password' => 'password';
 set 'template' => 'template_toolkit';
+set 'emoticons' => '/lib/emoticons';
 #set 'logger' => 'console';
 #set 'log' => 'debug';
 #set 'show_errors' => 1;
@@ -105,7 +106,13 @@ post '/Blog/add' => sub {
 	my $db = connect_db();
 	my $sql = 'insert into entries (title, text) values (?, ?)';
 	my $sth = $db->prepare($sql) or die $db->errstr;
-	$sth->execute(params->{'title'}, params->{'text'}) or die $sth->errstr;
+
+    my $pretext = params->{'text'};
+    $pretext =~ s!:\)!<img src="\./lib/emo_happy\.jpg" alt=":)"/>!;
+    $pretext =~ s!:\)!<img src="\./lib/emo_saad\.jpg" alt=":)"/>!;
+	#$sth->execute(params->{'title'}, params->{'text'}) or die $sth->errstr;
+	$sth->execute(params->{'title'}, $pretext) or die $sth->errstr;
+
 
 	set_flash('New entry posted!');
 	redirect '/Blog';
