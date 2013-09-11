@@ -20,11 +20,11 @@
 <% IF err %><p class=error><strong>Error:</strong> <% err %><% END %>
 <form action="<% edit_url%>/<%entry_id%>" method=post>
   <dl>
-    <dt>Text:
-    <dd><input type=text name=text>
      <dt>Titel: 
     <dd><input type=text name=titel>
-   <dd><input type=submit value="Edit entry">
+      <dt>Text:
+      <dd><textarea name=text rows=5 cols=40><% old_text %></textarea>
+      <dd><input type=submit value=Share>
 </dl>
 </form>
 

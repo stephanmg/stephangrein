@@ -132,10 +132,19 @@ any ['get', 'post'] => '/Blog/edit/*' => sub {
     }   
 
     	if ( request->method() eq "GET" ) {
+        my $dbh = connect_db();
+        my $sql = 'select text from entries where id = ?';
+        my $sth = $dbh->prepare($sql) or die $dbh->errstr;
+
+        $sth->execute($id);
+		    my $pretext = ($sth->fetchrow_hashref)->{'text'};
+        $pretext =~ s!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!:\)!g;
+        $pretext =~ s!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!:\(!g;
         
         template 'edit.tt' => {
             edit_url => uri_for('/Blog/edit'),
-            entry_id => $id
+            entry_id => $id,
+            old_text => $pretext
         };
     } else {
         my $dbh = connect_db();
@@ -153,7 +162,7 @@ any ['get', 'post'] => '/Blog/edit/*' => sub {
         }
         $sql = 'update entries set datum=? where id = ?';
         $sth = $dbh->prepare($sql) or die $dbh->errstr;
-        $sth->execute(localtime . "(last update)", $id);
+        $sth->execute(localtime . "(last update by: " . session('user') . ")", $id);
 
         set_flash("Entry No. " . $id . " successfully edited");
         redirect '/Blog';
