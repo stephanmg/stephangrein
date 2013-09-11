@@ -1,0 +1,33 @@
+            <h2 id="content-title">Lorem ipsum dolor sit amet: we are here <% name_of_page %></h2>
+            
+
+            <!-- Perex -->
+            <div id="perex" class="box">
+            
+            
+                <p><img src="/images/image-02.gif" width="150" height="113" alt="" class="f-left" />
+                Donec commodo. Pellentesque nunc. Ut blandit nisl nunc. <a href="#">Donec sapien</a> estem imperdiet ultrices, cursus elementum ac, neque. Cum sociis 
+                natoque penatibus et magnis dis parturient montes, nascetur ridiculuses mus. Sed in odio. Sedate ornare aliquam tortor. Aliquam aliquam blandit ante. 
+                Fusce elit. Donec blanditili. Sed nisi. Proin eros lectus, fermentum at, tristique quis, molestie quis, lectus. Nulla facilisi. Lorem ipsum dolor sit amet.</p>
+
+            
+            </div> <!-- /perex -->
+
+            <hr class="noscreen" />
+            
+            <div id="content-in">
+<h2>Comment</h2>
+<% IF err %><p class=error><strong>Error:</strong> <% err %><% END %>
+<form action="<% comment_url%>/<%entry_id%>" method=post>
+  <dl>
+     <dt>Titel: 
+    <dd><input type=text name=titel>
+      <dt>Text:
+      <dd><textarea name=text rows=5 cols=40><% old_text %></textarea>
+      <dd><input type=submit value=Share>
+    <dt>Author:
+    <dd><input type=text name=author>
+</dl>
+</form>
+
+</div> <!-- /content-in -->

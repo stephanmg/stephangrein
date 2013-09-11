@@ -72,6 +72,8 @@ sub init_db {
 	my $db = connect_db();
 	my $schema = read_file('./lib/schema.sql');
 	$db->do($schema) or die $db->errstr;
+  $schema = read_file('./lib/schema2.sql');
+	$db->do($schema) or die $db->errstr;
 }
 
 #hook 'before' => sub {
@@ -86,21 +88,74 @@ before_template sub {
 get '/Blog' => sub {
 	my $db = connect_db();
 	my $sql = 'select id, title, text, author, datum from entries order by id desc';
+ # all comments
+ # sql = 'select comment, article_id from comments';
+ # 'comments' => $sth->fetchall_hashref('id')
+ # then in the show_entries.tt template iterate over all entries with id and
+ #                             print all comments for this id (print where entries.id = comments.id)
 	my $sth = $db->prepare($sql) or die $db->errstr;
 	$sth->execute or die $sth->errstr;
     
     my $temp = NAVIGATION;
    $temp =~ s!<li>(<a href="/Blog">.*?</li>)!<li id="nav-active">$1!;
 
+    my $entries = $sth->fetchall_hashref('id');
+
+    $sql = 'select id, text, author, title, article_id from comments';
+    $sth = $db->prepare($sql) or die $db->errstr;
+    $sth->execute or die $sth->errstr;
+
+    my $comments = $sth->fetchall_hashref('id');
+    # then use entries.comments
 	template 'show_entries.tt' => { 
 		'msg' => get_flash(),
 		'add_entry_url' => uri_for('/Blog/add'),
     'edit_url' => uri_for('/Blog/edit'),
     'delete_url' => uri_for('/Blog/delete'),
-		'entries' => $sth->fetchall_hashref('id'),
+    'comment_url' => uri_for('/Blog/comment'),
+    'entries' => $entries,
+    'comments' => $comments,
+	#	'entries' => $sth->fetchall_hashref('id'),
     'navigation' => $temp
 	};
 };
+
+any ['post', 'get'] => '/Blog/comment/*' => sub {
+    my $err;
+    my ($id) = splat;
+    # maybe we allow anonymous comments here in future?
+    if (not session('user')) {
+        send_error("Not logged in", 401);
+    }   
+
+   	if ( request->method() eq "GET" ) {
+        template 'comment.tt' => {
+            comment_url => uri_for('/Blog/comment'),
+            entry_id => $id
+        };
+    } else {
+        my $dbh = connect_db();
+        my $sql = 'insert into comments (title, text, author, article_id) values (?, ?, ?, ?)';
+        my $sth = $dbh->prepare($sql) or die $dbh->errstr;
+        
+
+		    my $pretext = params->{'text'};
+        $pretext =~ s!:\)!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!g;
+        $pretext =~ s!:\(!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!g;
+        my $text = $pretext;
+        my $author = params->{'author'};
+        my $title = params->{'titel'};
+        if ($author ne "" && $text ne "" && $title ne "") {
+            $sth->execute($title, $text, $author, $id);
+            set_flash("Added comment for entry no. " . $id);
+            redirect '/Blog';
+        } else {
+            set_flash("Missing text, author or title. Refusing adding comment for entry no. " . $id);
+            redirect '/Blog/';
+        }   
+    }
+};
+
 
 any ['post', 'get'] => '/Blog/delete/*' => sub {
     my $err;

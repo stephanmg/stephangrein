@@ -1,6 +1,8 @@
-insert smileys via javascript?
-modify text in form via javascript?
-user add/password modify possibility!
+user add/password modify possibility required!
+make sure only logged in users can delete their own posts (can be done by: if session('user') == author where article_id = params->article_id (additional add delete/edit for comments)
+dont insert images in database, instead only insert :) and :( and when parsing entries replace it, the same can be done when edit is needed, that is read from database insert it into database without images (only one route /Blog needs to do replacement and edit does not to reverse replace the images to :) and :( !!!)
+
+insert smileys via javascript selection? 
 show login status on all pages? not only on blog site?
 
 add more tests
