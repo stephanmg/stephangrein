@@ -1,0 +1,5 @@
+add more tests
+split up initialize and webapp parts
+cleanup code ... use one db with 2 tables
+new field for comments maybe of blog entries
+fancier layout of entries etc...

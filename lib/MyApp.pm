@@ -11,6 +11,7 @@ set layout => 'new_main'; # set main layout
 our $VERSION = '0.1';
 use DBI;
 use File::Slurp;
+use Crypt::SaltedHash;
 
 ################
 ### settings ###
@@ -72,7 +73,8 @@ sub init_db {
 	$db->do($schema) or die $db->errstr;
 }
 
-before_template sub {
+hook 'before' => sub {
+#before_template sub {
 	my $tokens = shift;
 	
 	#$tokens->{'css_url'} = request->base . 'css/style.css';
@@ -82,7 +84,7 @@ before_template sub {
 
 get '/Blog' => sub {
 	my $db = connect_db();
-	my $sql = 'select id, title, text from entries order by id desc';
+	my $sql = 'select id, title, text, author from entries order by id desc';
 	my $sth = $db->prepare($sql) or die $db->errstr;
 	$sth->execute or die $sth->errstr;
     
@@ -99,42 +101,61 @@ get '/Blog' => sub {
 };
 
 post '/Blog/add' => sub {
-	if ( not session('logged_in') ) {
+	if ( not session('user') ) {
 		send_error("Not logged in", 401);
 	}
 
 	my $db = connect_db();
-	my $sql = 'insert into entries (title, text) values (?, ?)';
+	my $sql = 'insert into entries (title, text, author) values (?, ?, ?)';
 	my $sth = $db->prepare($sql) or die $db->errstr;
 
     my $pretext = params->{'text'};
     $pretext =~ s!:\)!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!;
     $pretext =~ s!:\(!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!;
 	#$sth->execute(params->{'title'}, params->{'text'}) or die $sth->errstr;
-	$sth->execute(params->{'title'}, $pretext) or die $sth->errstr;
+	$sth->execute(params->{'title'}, $pretext, session('user')) or die $sth->errstr;
 
 
-	set_flash('New entry posted!');
+set_flash('New entry posted!');
 	redirect '/Blog';
 };
 
 any ['get', 'post'] => '/Blog/login' => sub {
 	my $err;
+	my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
+		die $DBI::errstr;
 
 	if ( request->method() eq "POST" ) {
-		# process form input
-		if ( params->{'username'} ne setting('username') ) {
-			$err = "Invalid username";
-		}
-		elsif ( params->{'password'} ne setting('password') ) {
-			$err = "Invalid password";
-		}
-		else {
-			session 'logged_in' => true;
-			set_flash('You are logged in (admin).');
-			redirect '/Blog';
-		}
-	}
+    my $sth;
+    $sth  = $dbh->prepare("SELECT user FROM users WHERE user = ?");
+    my $user = "";
+    my $pass = "";
+    my $res = "";
+    $sth->execute(params->{username}) or die $sth->errstr;
+    $res = $sth->fetchrow_hashref();
+    $user = $res->{user};
+
+    $sth = $dbh->prepare("SELECT pass FROM users WHERE user = ?");
+    $sth->execute(params->{username}) or die $sth->errstr;
+    $res = $sth->fetchrow_hashref();
+    $pass = $res->{pass};
+    if (!$user) {
+        set_flash("Invalid user name: " . params->{username});
+        redirect '/Blog';
+    } else {
+        my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
+        $csh->add('test');
+        if (Crypt::SaltedHash->validate($csh->generate, params->{password})) {
+    session 'user' => params->{username};
+    set_flash("You are logged in (" . session('user') . ")");
+    redirect '/Blog';
+    }    else {
+    set_flash("Invalid pass word: " . $pass);
+    redirect '/Blog';
+    session 'user' => false;
+    }
+    }
+}
 
    my $temp = NAVIGATION;
    $temp =~ s!<li>(<a href="/Blog/login">.*?</li>)!<li id="nav-active">$1!;
