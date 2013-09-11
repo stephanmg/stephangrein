@@ -108,8 +108,8 @@ post '/Blog/add' => sub {
 	my $sth = $db->prepare($sql) or die $db->errstr;
 
     my $pretext = params->{'text'};
-    $pretext =~ s!:\)!<img src="\./lib/emo_happy\.jpg" alt=":)"/>!;
-    $pretext =~ s!:\)!<img src="\./lib/emo_saad\.jpg" alt=":)"/>!;
+    $pretext =~ s!:\)!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!;
+    $pretext =~ s!:\(!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!;
 	#$sth->execute(params->{'title'}, params->{'text'}) or die $sth->errstr;
 	$sth->execute(params->{'title'}, $pretext) or die $sth->errstr;
 
