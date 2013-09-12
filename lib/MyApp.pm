@@ -30,6 +30,24 @@ set 'emoticons' => '/lib/emoticons';
 #set 'warnings' => 1;
 
 
+#################
+### emoticons ###
+#################
+my $EMOTICONS_DIR = '/images/emoticons';
+my @EMOTICONS = {
+    ":)" => qq!<img src="$EMOTICONS_DIR/happy\.jpg" alt="happy"/>!,
+    ":(" => qq!<img src="$EMOTICONS_DIR/sad\.jpg" alt="happy"/>!,
+    ":P" => qq!<img src="$EMOTICONS_DIR/tongue\.jpg" alt="tongue"/>!
+};
+
+sub emoticonize {
+    #to be implemented
+}
+
+sub unemoticonize {
+    #to be implemented
+}
+
 #########################
 ### navigation string ###
 #########################
