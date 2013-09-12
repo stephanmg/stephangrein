@@ -189,11 +189,20 @@ any ['post', 'get'] => '/Blog/delete/*' => sub {
         };
     } else {
         my $dbh = connect_db();
-        my $sql = 'delete from entries where id = ?';
+        my $sql = 'select author from entries where id = ?';
         my $sth = $dbh->prepare($sql) or die $dbh->errstr;
         $sth->execute($id);
-        set_flash("Deleted successfully entry no. " . $id);
-        redirect '/Blog';
+		    my $author = ($sth->fetchrow_hashref)->{'author'};
+        if ($author ne session('user')) {
+            set_flash("Can only deleted own entries! Entry no. " . $id . " is not your entry. Refused.");
+            redirect '/Blog';
+        } else {
+            $sql = 'delete from entries where id = ?';
+            $sth = $dbh->prepare($sql) or die $dbh->errstr;
+            $sth->execute($id);
+            set_flash("Deleted successfully entry no. " . $id);
+            redirect '/Blog';
+        }
     }
 };
 
