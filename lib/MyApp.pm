@@ -106,11 +106,6 @@ before_template sub {
 get '/Blog' => sub {
 	my $db = connect_db();
 	my $sql = 'select id, title, text, author, datum from entries order by id desc';
- # all comments
- # sql = 'select comment, article_id from comments';
- # 'comments' => $sth->fetchall_hashref('id')
- # then in the show_entries.tt template iterate over all entries with id and
- #                             print all comments for this id (print where entries.id = comments.id)
 	my $sth = $db->prepare($sql) or die $db->errstr;
 	$sth->execute or die $sth->errstr;
     
@@ -131,11 +126,47 @@ get '/Blog' => sub {
     'edit_url' => uri_for('/Blog/edit'),
     'delete_url' => uri_for('/Blog/delete'),
     'comment_url' => uri_for('/Blog/comment'),
+    'edit_comment_url' => uri_for('/Blog/edit_comment'),
+    'delete_comment_url' => uri_for('/Blog/delete_comment'),
     'entries' => $entries,
     'comments' => $comments,
 	#	'entries' => $sth->fetchall_hashref('id'),
     'navigation' => $temp
 	};
+};
+
+any ['post', 'get'] => '/Blog/delete_comment/*' => sub {
+    my $err;
+    my ($id) = splat;
+    if (not session('user')) {
+        send_error("Not logged in", 401);
+    }   
+
+    	if ( request->method() eq "GET" ) {
+        template 'delete_comment.tt' => {
+            delete_comment_url => uri_for('/Blog/delete_comment'),
+            entry_id => $id
+        };
+    } else {
+        my $dbh = connect_db();
+        my $sql = 'select author, article_id from comments where id = ?';
+        my $sth = $dbh->prepare($sql) or die $dbh->errstr;
+        $sth->execute($id);
+        my $results = $sth->fetchrow_hashref;
+        my $author = $results->{'author'};
+        my $article_id = $results->{'article_id'};
+        if ($author ne session('user')) {
+            set_flash("Can only deleted own comments! Comment no. " . $id . " is not your comment for entry no. " . $article_id . ". Refused.");
+            redirect '/Blog';
+        } else {
+            $sql = 'delete from comments where id = ?';
+            $sth = $dbh->prepare($sql) or die $dbh->errstr;
+            $sth->execute($id);
+            set_flash("Deleted successfully comment no. " . $id);
+            redirect '/Blog';
+     }
+    }
+
 };
 
 any ['post', 'get'] => '/Blog/comment/*' => sub {
@@ -161,17 +192,18 @@ any ['post', 'get'] => '/Blog/comment/*' => sub {
         $pretext =~ s!:\)!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!g;
         $pretext =~ s!:\(!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!g;
         my $text = $pretext;
-        my $author = params->{'author'};
+        my $author = session('user'); # params->{'author'};
         my $title = params->{'titel'};
         if ($author ne "" && $text ne "" && $title ne "") {
             $sth->execute($title, $text, $author, $id);
             set_flash("Added comment for entry no. " . $id);
             redirect '/Blog';
-        } else {
-            set_flash("Missing text, author or title. Refusing adding comment for entry no. " . $id);
-            redirect '/Blog/';
-        }   
+         } else {
+
+        set_flash("Missing text or title. Refusing adding comment for entry no. " . $id);
+        redirect '/Blog';
     }
+}
 };
 
 

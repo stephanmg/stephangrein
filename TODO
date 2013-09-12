@@ -1,13 +1,22 @@
+############
+### high ###
+############
 use global hash with smileys ... and introduce subs emoticonize and unemoticionize ...
-add delete/edit/ for comments too -> set_flash (deletion denied) and redirect to /Blog if its not own comment. make sure if article is deleted then also all comments can be deleted from comments table savely
+add edit for comments too -> set_flash (deletion denied) and redirect to /Blog if its not own comment. make sure if article is deleted then also all comments can be deleted from comments table savely -> make views/delete_comment.tt views/edit_comment.tt and views/delete.tt and views/edit.tt parameters fitting those required ... (missing parameters and not required parameters) - also DELETE comments from DB really
+nicer layout if not logged in for actions
 
+##############
+### middle ###
+##############
 user add/password modify possibility required!
 dont insert images in database, instead only insert :) and :( and when parsing entries replace it, the same can be done when edit is needed, that is read from database insert it into database without images (only one route /Blog needs to do replacement and edit does not to reverse replace the images to :) and :( !!!)
 
+###########
+### low ###
+###########
 insert smileys via javascript selection? 
 show login status on all pages? not only on blog site?
 add more tests
 split up initialize and webapp parts
 cleanup code ... use one db with 2 tables
-new field for comments maybe? ...
 fancier layout of entries? etc...

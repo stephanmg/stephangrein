@@ -16,15 +16,15 @@
             <hr class="noscreen" />
             
             <div id="content-in">
-<h2>Comment</h2>
+<h2>Delete</h2>
 <% IF err %><p class=error><strong>Error:</strong> <% err %><% END %>
-<form action="<% comment_url%>/<%entry_id%>" method=post>
+<form action="<% delete_comment_url%>/<%entry_id%>" method=post>
   <dl>
-     <dt>Titel: 
-    <dd><input type=text name=titel>
-      <dt>Text:
-      <dd><textarea name=text rows=5 cols=40><% old_text %></textarea>
-      <dd><input type=submit value=Share>
+    <dt>Really delete?
+    <dd>Post id was: <%entry_id%>
+    <dd>Titel: <%entry_title%>
+    <dd>Text: <%entry_text%>
+   <dd><input type=submit value="Delete entry">
 </dl>
 </form>
 
