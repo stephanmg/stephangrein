@@ -3,6 +3,7 @@
 ############
 use global hash with smileys ... and introduce subs emoticonize and unemoticionize ...
 if user == admin => can do anything!
+use ssl
 
 ##############
 ### middle ###
