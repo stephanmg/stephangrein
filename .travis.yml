@@ -4,6 +4,10 @@ perl:
    - "5.14"
    - "5.12"
 
+before_install:
+   - sudo apt-get update
+   - sudo apt-get install libgd-gd2-perl
+
 install:
    - cpanm -q -n Template
    - cpanm -q -n Dancer
@@ -13,7 +17,6 @@ install:
    - cpanm -q -n DBD::SQLite
    - cpanm -q -n File::Slurp
    - cpanm -q -n Crypt::SaltedHash
-   - cpanm -q -n GD
    - cpanm -q -n GD::SecurityImage
    - cpanm -q -n Dancer::Plugin::Captcha::SecurityImage 
 
