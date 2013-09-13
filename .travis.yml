@@ -7,12 +7,15 @@ perl:
 install:
    - cpanm -q -n Template
    - cpanm -q -n Dancer
-   - cpanm -q -n Dancer::Plugin::SiteMap;
-   - cpanm -q -n Dancer::Plugin::DirectoryView;
-   - cpanm -q -n Dancer::Plugin::Auth::Htpasswd;
-   - cpanm -q -n DBD::SQLite;
+   - cpanm -q -n Dancer::Plugin::SiteMap
+   - cpanm -q -n Dancer::Plugin::DirectoryView
+   - cpanm -q -n Dancer::Plugin::Auth::Htpasswd
+   - cpanm -q -n DBD::SQLite
    - cpanm -q -n File::Slurp
-   - cpanm -q -n Crypt::SaltedHash;
+   - cpanm -q -n Crypt::SaltedHash
+   - cpanm -q -n GD::SecurityImage
+   - cpanm -q -n Dancer::Plugin::Captcha::SecurityImage 
+
 
 
 notifications:
