@@ -1,0 +1,12 @@
+<h2>
+Capture:
+Image_mime: <%image_mime%><br/><br/>
+<img src="data:image/<%image_mime%>;base64,<% image_data %>"/>
+</h2>
+<form action="<% captcha_url%>" method=post>
+  <dl>
+     <dt>Captcha String: 
+    <dd><input type=text name=captcha>
+    <dd><input type=submit value=Share>
+</dl>
+</form>

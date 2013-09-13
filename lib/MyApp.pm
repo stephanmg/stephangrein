@@ -13,7 +13,7 @@ use DBI;
 use File::Slurp;
 use Crypt::SaltedHash;
 use POSIX;
-use GD::SecurityImage; 
+use GD::SecurityImage;
 use MIME::Base64;
 
 ################
