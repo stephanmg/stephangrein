@@ -7,7 +7,11 @@ perl:
 before_install:
    - sudo apt-get update
    - sudo apt-get install libgd-gd2-perl
-   - sudo apt-get install libgd2-dev
+   - sudo apt-get install libgd-gd2-noxpm-perl
+   - sudo apt-get install libgd2-noxpm
+   - sudo apt-get install libgd2-noxpm-dev
+   - sudo apt-get install libgd2-xpm
+   - sudo apt-get install libgd2-xpm-dev
 
 install:
    - cpanm -q -n Template
@@ -21,6 +25,8 @@ install:
    - cpanm -n GD
    - cpanm -q -n GD::SecurityImage
    - cpanm -q -n Dancer::Plugin::Captcha::SecurityImage 
+
+
 
 
 
