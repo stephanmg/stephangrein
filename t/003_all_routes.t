@@ -6,7 +6,7 @@ use MyApp;
 use Dancer::Test;
 
 # routes to check
-my @routes=qw/CV About Publications/;
+my @routes=qw(CV About Publications Blog Blog/login Blog/logout);
 
 # check each route
 my $route;

@@ -1,14 +1,14 @@
 ############
 ### high ###
 ############
-use global hash with smileys ... and introduce subs emoticonize and unemoticionize ...
-if user == admin => can do anything!
-use ssl
+use global hash with smileys ... and introduce subs emoticonize and unemoticionize and use them in subroutines
+if session('user') == admin => can do anything! => introduce checks in subroutines
+use ssl / https for page with lighttpd
 
 ##############
 ### middle ###
 ##############
-user add/password modify possibility required! => send email with perl to my email adress for request
+user add/password modify possibility required! => send email with perl to my email adress for request (security via captcha maybe?)
 dont insert images in database, instead only insert :) and :( and when parsing entries replace it, the same can be done when edit is needed, that is read from database insert it into database without images (only one route /Blog needs to do replacement and edit does not to reverse replace the images to :) and :( !!!)
 
 ###########
@@ -16,7 +16,7 @@ dont insert images in database, instead only insert :) and :( and when parsing e
 ###########
 insert smileys via javascript selection? 
 show login status on all pages? not only on blog site?
-add more tests
+add more perl tests
 split up initialize and webapp parts
 cleanup code ... use one db with 2 tables
-fancier layout of entries? etc...
+user pages?
