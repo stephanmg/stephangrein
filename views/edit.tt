@@ -16,7 +16,7 @@
             <hr class="noscreen" />
             
             <div id="content-in">
-<h2>Edit</h2>
+<h2>Edit entry:</h2>
 <% IF err %><p class=error><strong>Error:</strong> <% err %><% END %>
 <form action="<% edit_url%>/<%entry_id%>" method=post>
   <dl>

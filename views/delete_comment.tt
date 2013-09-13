@@ -16,7 +16,7 @@
             <hr class="noscreen" />
             
             <div id="content-in">
-<h2>Delete</h2>
+<h2>Delete comment:</h2>
 <% IF err %><p class=error><strong>Error:</strong> <% err %><% END %>
 <form action="<% delete_comment_url%>/<%entry_id%>" method=post>
   <dl>
@@ -24,6 +24,7 @@
     <dd>Post id was: <%entry_id%>
     <dd>Titel: <%entry_title%>
     <dd>Text: <%entry_text%>
+    <dd>Author: <%entry_author%>
    <dd><input type=submit value="Delete entry">
 </dl>
 </form>

@@ -2,13 +2,12 @@
 ### high ###
 ############
 use global hash with smileys ... and introduce subs emoticonize and unemoticionize ...
-add edit for comments too -> set_flash (deletion denied) and redirect to /Blog if its not own comment. make sure if article is deleted then also all comments can be deleted from comments table savely -> make views/delete_comment.tt views/edit_comment.tt and views/delete.tt and views/edit.tt parameters fitting those required ... (missing parameters and not required parameters) - also DELETE comments from DB really
-nicer layout if not logged in for actions
+if user == admin => can do anything!
 
 ##############
 ### middle ###
 ##############
-user add/password modify possibility required!
+user add/password modify possibility required! => send email with perl to my email adress for request
 dont insert images in database, instead only insert :) and :( and when parsing entries replace it, the same can be done when edit is needed, that is read from database insert it into database without images (only one route /Blog needs to do replacement and edit does not to reverse replace the images to :) and :( !!!)
 
 ###########

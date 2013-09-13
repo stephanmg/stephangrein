@@ -63,6 +63,10 @@ use constant NAVIGATION =>
     <li><a href="/Blog">Blog</a></li>
     </ul>);
 
+
+#####################
+### flash message ### 
+#####################
 my $flash;
 
 sub set_flash {
@@ -143,9 +147,25 @@ any ['post', 'get'] => '/Blog/delete_comment/*' => sub {
     }   
 
     	if ( request->method() eq "GET" ) {
+        my $dbh = connect_db();
+        my $sql = 'select author, title, text from comments where id = ?';
+        my $sth = $dbh->prepare($sql) or die $dbh->errstr;
+        $sth->execute($id);
+
+        my $result = ($sth->fetchrow_hashref);
+        my $author = $result->{'author'};
+        my $title = $result->{'title'};
+        my $pretext = $result->{'text'};
+        $pretext =~ s!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!:\)!g;
+        $pretext =~ s!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!:\(!g;
+        my $text = $pretext;
+
         template 'delete_comment.tt' => {
             delete_comment_url => uri_for('/Blog/delete_comment'),
-            entry_id => $id
+            entry_id => $id,
+            entry_author => $author,
+            entry_title => $title,
+            entry_text => $text
         };
     } else {
         my $dbh = connect_db();
@@ -168,6 +188,60 @@ any ['post', 'get'] => '/Blog/delete_comment/*' => sub {
     }
 
 };
+
+any ['get', 'post'] => '/Blog/edit_comment/*' => sub {
+	my $err;
+  my ($id) = splat; # get wildcard id
+    if (not session('user')) {
+        send_error("Not logged in", 401);
+    }   
+
+    	if ( request->method() eq "GET" ) {
+        my $dbh = connect_db();
+        my $sql = 'select text from comments where id = ?';
+        my $sth = $dbh->prepare($sql) or die $dbh->errstr;
+
+        $sth->execute($id);
+		    my $pretext = ($sth->fetchrow_hashref)->{'text'};
+        $pretext =~ s!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!:\)!g;
+        $pretext =~ s!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!:\(!g;
+        
+        template 'edit_comment.tt' => {
+            edit_comment_url => uri_for('/Blog/edit_comment'),
+            entry_id => $id,
+            old_text => $pretext
+        };
+    } else {
+        my $dbh = connect_db();
+        my $sql = 'select author from comments where id = ?';
+        my $sth = $dbh->prepare($sql) or die $dbh->errstr;
+        $sth->execute($id);
+        
+        my $author = ($sth->fetchrow_hashref)->{'author'};
+        if ($author ne session('user')) {
+            set_flash("Can only edit own comments. Comment No. " . $id . " is not your own comment. Refused.");
+            redirect '/Blog';
+        } else {
+            $sql = 'update comments set text=? where id = ?';
+            $sth = $dbh->prepare($sql) or die $dbh->errstr;
+            my $pretext = params->{'text'};
+            $pretext =~ s!:\)!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!g;
+            $pretext =~ s!:\(!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!g;
+            $sth->execute($pretext, $id);
+            if (params->{'titel'} ne "") {
+                $sql = 'update comments set title=? where id = ?';
+                $sth = $dbh->prepare($sql) or die $dbh->errstr;
+                $sth->execute(params->{'titel'}, $id);
+            }
+            set_flash("Comment No. " . $id . " successfully edited.");
+            redirect '/Blog';
+        }
+    }
+};
+
+
+
+
 
 any ['post', 'get'] => '/Blog/comment/*' => sub {
     my $err;
@@ -215,9 +289,25 @@ any ['post', 'get'] => '/Blog/delete/*' => sub {
     }   
 
     	if ( request->method() eq "GET" ) {
+        my $dbh = connect_db();
+        my $sql = 'select author, title, text from entries where id = ?';
+        my $sth = $dbh->prepare($sql) or die $dbh->errstr;
+        $sth->execute($id);
+
+        my $result = ($sth->fetchrow_hashref);
+        my $author = $result->{'author'};
+        my $title = $result->{'title'};
+        my $pretext = $result->{'text'};
+        $pretext =~ s!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!:\)!g;
+        $pretext =~ s!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!:\(!g;
+        my $text = $pretext;
+
         template 'delete.tt' => {
             delete_url => uri_for('/Blog/delete'),
-            entry_id => $id
+            entry_id => $id,
+            entry_title => $title,
+            entry_author => $author,
+            entry_text => $text
         };
     } else {
         my $dbh = connect_db();
@@ -230,6 +320,10 @@ any ['post', 'get'] => '/Blog/delete/*' => sub {
             redirect '/Blog';
         } else {
             $sql = 'delete from entries where id = ?';
+            $sth = $dbh->prepare($sql) or die $dbh->errstr;
+            $sth->execute($id);
+
+            $sql = 'delete from comments where article_id = ?';
             $sth = $dbh->prepare($sql) or die $dbh->errstr;
             $sth->execute($id);
             set_flash("Deleted successfully entry no. " . $id);
@@ -334,7 +428,7 @@ any ['get', 'post'] => '/Blog/login' => sub {
     set_flash("You are logged in (" . session('user') . ")");
     redirect '/Blog';
     }    else {
-    set_flash("Invalid pass word: " . $pass);
+    set_flash("Invalid pass word: " . params->{password});
     redirect '/Blog';
     session 'user' => false;
     }

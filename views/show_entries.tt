@@ -32,10 +32,10 @@
 <ul class=entries>
 <% IF entries.size %>
   <% FOREACH id IN entries.keys.nsort %>
-    <li><h2><% entries.$id.title %> (from: <% entries.$id.datum %>)</h2><% entries.$id.text %><br/>Author: <% entries.$id.author %> -- <%IF session.user %> Action: <a href="<%edit_url%>/<%entries.$id.id%>">Edit</a> / <%END%> <%IF session.user %> <a href="<%delete_url%>/<%entries.$id.id%>">Delete</a> <%END%> / <%IF session.user %><a href="<%comment_url%>/<%entries.$id.id%>">Comment</a> <%END%><br /><h3> Comments </h3><dl>
+    <li><h2><% entries.$id.title %> (from: <% entries.$id.datum %>)</h2><% entries.$id.text %><br/>Author: <% entries.$id.author %><%IF session.user %>. Actions: <a href="<%edit_url%>/<%entries.$id.id%>">Edit</a> / <a href="<%delete_url%>/<%entries.$id.id%>">Delete</a> / <a href="<%comment_url%>/<%entries.$id.id%>">Comment</a> <%END%> <h3> Comments </h3><dl>
   <% FOREACH id2 in comments.keys.nsort %>
   <% IF id == comments.$id2.article_id %>
-    <dd> <%comments.$id2.text%> from <%comments.$id2.author%>. Action: <%IF session.user %> <a href="<%edit_comment_url%>/<%comments.$id2.id%>"> Edit </a> <% END %> / <%IF session.user %> <a href="<%delete_comment_url%>/<%comments.$id2.id%>"> Delete </a> <%END %>
+    <dd> <b><%comments.$id2.title%></b><br /><%comments.$id2.text%> from <%comments.$id2.author%>. <%IF session.user %>Actions: <a href="<%edit_comment_url%>/<%comments.$id2.id%>">Edit</a> / <a href="<%delete_comment_url%>/<%comments.$id2.id%>">Delete</a> <%END %>
   <% END %>
   <% END %>
   </dl>
