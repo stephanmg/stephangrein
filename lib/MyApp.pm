@@ -13,6 +13,8 @@ use DBI;
 use File::Slurp;
 use Crypt::SaltedHash;
 use POSIX;
+use GD::SecurityImage; 
+use MIME::Base64;
 
 ################
 ### settings ###
@@ -486,5 +488,55 @@ sub route_callback {
 ######################################################
 my @routes = grep { $_ ne "Blog" } NAVIGATION =~ m!<li><a href="/(.*?)">.*?</li>!g;
 get '/' . $_ => route_callback($_, NAVIGATION) for @routes;
+
+
+###############
+### captcha ###
+###############
+sub random_pass {
+    my $length = shift;
+    my $captcha;
+    for (1..$length) {
+        $captcha .= chr(rand(94)+33);
+    }
+    return $captcha;
+}
+
+get '/captcha' => sub {
+    my $captcha = random_pass(9);
+   my ($data, $mime, $rnd) = GD::SecurityImage->new(
+    width => 180,
+    height => 120,
+    lines => 5,
+    gd_font => 'Giant',
+    ptsize => 80,
+    color => '#0000FF',
+    )
+    ->random($captcha)
+    ->create(qw/ec #FF0000 #00FF00/)
+ #   ->particle
+    ->out;
+    
+    session 'captcha_str' => $rnd;
+    session 'captcha_data' => $data;
+    
+    # base64 encode image here
+    my $encoded = MIME::Base64::encode_base64($data);
+    template 'captcha.tt' => {
+        image_data => $encoded,
+        image_mime => $mime
+    };
+};
+
+post '/captcha' => sub {
+    my $captcha_string = params->{'captcha'};
+    if (session('captcha_str') eq $captcha_string) {
+        set_flash("capture was correct");
+        redirect "/Blog";
+    } else {
+        set_flash("capture was incorrect");
+        redirect "/Blog/capture";
+    }
+};
 
 true;
