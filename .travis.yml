@@ -22,7 +22,7 @@ install:
    - cpanm -q -n DBD::SQLite
    - cpanm -q -n File::Slurp
    - cpanm -q -n Crypt::SaltedHash
-   - cpanm -n GD
+   - cpanm -q -n GD
    - cpanm -q -n GD::SecurityImage
    - cpanm -q -n Dancer::Plugin::Captcha::SecurityImage 
 
