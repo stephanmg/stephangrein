@@ -505,16 +505,17 @@ sub random_pass {
 get '/captcha' => sub {
     my $captcha = random_pass(9);
    my ($data, $mime, $rnd) = GD::SecurityImage->new(
-    width => 180,
-    height => 120,
-    lines => 5,
+    width => 100,
+    height => 60,
+    lines => 4,
+    thickness => 1,
     gd_font => 'Giant',
-    ptsize => 80,
-    color => '#0000FF',
+    ptsize => 160,
+    color => '#02AAFC'
     )
     ->random($captcha)
-    ->create(qw/ec #FF0000 #00FF00/)
- #   ->particle
+    ->create(qw/normal circle #02AAFC #02AAFC/)
+    ->particle(400)
     ->out;
     
     session 'captcha_str' => $rnd;

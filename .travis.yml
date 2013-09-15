@@ -26,10 +26,6 @@ install:
    - cpanm -q -n GD::SecurityImage
    - cpanm -q -n Dancer::Plugin::Captcha::SecurityImage 
 
-
-
-
-
 notifications:
    recipients:
       - stephan@syntaktischer-zucker.de
