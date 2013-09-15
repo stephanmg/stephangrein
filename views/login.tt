@@ -24,10 +24,14 @@
     <dd><input type=text name=username>
     <dt>Password:
     <dd><input type=password name=password>
+    <dt>Capture (see below):
+    <dd><input type=text name=captcha_str2>
     <dd><input type=submit value=Login>
   </dl>
 </form>
 
+Capture:
+<img src="data:image/<%captcha_mime%>;base64,<% captcha_data %>"/>
             </div> <!-- /content-in -->
                
 

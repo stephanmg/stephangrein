@@ -401,12 +401,18 @@ set_flash('New entry posted!');
 };
 
 any ['get', 'post'] => '/Blog/login' => sub {
+
 	my $err;
 	my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
 		die $DBI::errstr;
-
 	if ( request->method() eq "POST" ) {
-    my $sth;
+
+    my $captcha_str2 = params->{captcha_str2};
+    if (!$captcha_str2 || $captcha_str2 ne session('captcha_str')) {
+        redirect '/Blog';
+        set_flash("Captcha empty or wrong.");
+    } else {
+        my $sth;
     $sth  = $dbh->prepare("SELECT user FROM users WHERE user = ?");
     my $user = "";
     my $pass = "";
@@ -436,14 +442,21 @@ any ['get', 'post'] => '/Blog/login' => sub {
     }
     }
 }
+}
 
    my $temp = NAVIGATION;
    $temp =~ s!<li>(<a href="/Blog/login">.*?</li>)!<li id="nav-active">$1!;
+    
+    generate_capture();
+    my $captcha_data = session('captcha_data'); 
+    my $captcha_mime = session('captcha_mime');
 
 	# display login form
 	template 'login.tt' => { 
 		'err' => $err,
-    'navigation' => $temp
+    'navigation' => $temp,
+    'captcha_mime' => $captcha_mime,
+    'captcha_data' => $captcha_data
     }, 
     {
     layout => "new_main"
@@ -452,6 +465,7 @@ any ['get', 'post'] => '/Blog/login' => sub {
 };
 
 get '/Blog/logout' => sub {
+ destroy_captcha();
 	session->destroy;
 	set_flash('You are logged out.');
 	redirect '/Blog';
@@ -502,8 +516,8 @@ sub random_pass {
     return $captcha;
 }
 
-get '/captcha' => sub {
-    my $captcha = random_pass(9);
+sub generate_capture {
+   my $captcha = random_pass(9);
    my ($data, $mime, $rnd) = GD::SecurityImage->new(
     width => 100,
     height => 60,
@@ -518,26 +532,18 @@ get '/captcha' => sub {
     ->particle(400)
     ->out;
     
-    session 'captcha_str' => $rnd;
-    session 'captcha_data' => $data;
-    
     # base64 encode image here
     my $encoded = MIME::Base64::encode_base64($data);
-    template 'captcha.tt' => {
-        image_data => $encoded,
-        image_mime => $mime
-    };
+
+    session 'captcha_str' => $rnd;
+    session 'captcha_data' => $encoded;
+    session 'captcha_mime' => $mime;
 };
 
-post '/captcha' => sub {
-    my $captcha_string = params->{'captcha'};
-    if (session('captcha_str') eq $captcha_string) {
-        set_flash("capture was correct");
-        redirect "/Blog";
-    } else {
-        set_flash("capture was incorrect");
-        redirect "/Blog/capture";
-    }
+sub destroy_captcha {
+    session 'captcha_str' => undef;
+    session 'captcha_data' => undef;
+    session 'captcha_mime' => undef;
 };
 
 true;

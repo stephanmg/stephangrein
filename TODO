@@ -3,12 +3,13 @@
 ############
 use global hash with smileys ... and introduce subs emoticonize and unemoticionize and use them in subroutines
 if session('user') == admin => can do anything! => introduce checks in subroutines
-use ssl / https for page with lighttpd
+use ssl / https for page with lighttpd ...
 
 ##############
 ### middle ###
 ##############
-user add/password modify possibility required! => send email with perl to my email adress for request (security via captcha maybe?)
+user add/password modify possibility required! => send email with perl to my email adress for request 
+show only 50 entries, and then make links to access more items.
 dont insert images in database, instead only insert :) and :( and when parsing entries replace it, the same can be done when edit is needed, that is read from database insert it into database without images (only one route /Blog needs to do replacement and edit does not to reverse replace the images to :) and :( !!!)
 
 ###########

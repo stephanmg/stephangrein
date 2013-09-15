@@ -46,12 +46,9 @@
 </ul>
 
 <% IF not session.user %>
-      <a href="<% login_url %>">log in</a>
+      <a href="<% login_url %>">log in</a> <% msg %>
     <% ELSE %>
-      <a href="<% logout_url %>">log out (<%session.user%>)</a>
-    <% END %>
-    <% IF msg %>
-    <% msg %>
-    <% END %>
+      <a href="<% logout_url %>">log out (<%session.user%>)</a> <%msg %>
+  <% END %>
             </div> <!-- /content-in -->
                
