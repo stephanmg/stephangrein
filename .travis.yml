@@ -28,5 +28,3 @@ notifications:
    email:
       on_success: always
       on_failure: always
-
-after_failure: "cat /home/travis/.cpanm/work/*.*/build.log"
