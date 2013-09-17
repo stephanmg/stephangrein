@@ -1,7 +1,7 @@
 ############
 ### high ###
 ############
-global hash containing smiley name/path to smiley, implement subs emoticonize/unemoticionize and use them 
+global hash containing smiley name/path to smiley, implement subs emoticonize/unemoticionize and use them  -> implemented -> add tests and more smileys (copyright!?)
 if session('user') == admin => true: can do anything since admin, use this check in subroutines
 use ssl / https for page with lighttpd 
 add more perl tests

@@ -36,18 +36,35 @@ set 'emoticons' => '/lib/emoticons';
 ### emoticons ###
 #################
 my $EMOTICONS_DIR = '/images/emoticons';
-my @EMOTICONS = {
-    ":)" => qq!<img src="$EMOTICONS_DIR/happy\.jpg" alt="happy"/>!,
-    ":(" => qq!<img src="$EMOTICONS_DIR/sad\.jpg" alt="happy"/>!,
-    ":P" => qq!<img src="$EMOTICONS_DIR/tongue\.jpg" alt="tongue"/>!
-};
+my %EMOTICONS = (
+    ":\)"  => qq!<img src="$EMOTICONS_DIR/happy\.jpg" alt="happy"/>!,
+    ":\("  => qq!<img src="$EMOTICONS_DIR/sad\.jpg" alt="sad"/>!,
+    ":P"   => qq!<img src="$EMOTICONS_DIR/tongue\.jpg" alt="tongue"/>!
+);
 
+###################################################
+### encode/decode smileys represetend by images ###
+###################################################
 sub emoticonize {
-    #to be implemented
+    my $text = shift; # the plain text string containing smileys
+    my %emoticons = shift;
+
+    for my $key (keys %emoticons) {
+        $text =~ s!$key!$emoticons{$key}!g;
+    }
+
+   return $text;
 }
 
 sub unemoticonize {
-    #to be implemented
+    my $text = shift; # the string with encoded smileys as images
+    my %emoticons = shift;
+
+    for my $key (keys %emoticons) {
+        $text =~ s!$emoticons{$key}!$key!g;
+    }
+    
+    return $text;   
 }
 
 #########################
