@@ -22,7 +22,7 @@ use Test::More tests => 3;                      # last test to print
 
 use MyApp;
 use Dancer::Test;
-use vars qw(EMOTICONS);
+use vars qw(%EMOTICONS);
 
 my @strings = qw/:) :( :P/;
 my $counter = 0;
