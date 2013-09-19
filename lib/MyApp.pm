@@ -52,7 +52,7 @@ our %EMOTICONS = (
 ###################################################
 sub emoticonize {
     my $text = shift; # the plain text string containing smileys
-    my %emoticons = shift;
+    my $emoticons = shift;
 
     for my $key (keys %$emoticons) {
         my $val = $emoticons->{$key};
@@ -63,7 +63,7 @@ sub emoticonize {
 
 sub unemoticonize {
     my $text = shift; # the string with encoded smileys as images
-    my %emoticons = shift;
+    my $emoticons = shift;
 
     for my $key (keys %$emoticons) {
         my $val = $emoticons->{$key};
