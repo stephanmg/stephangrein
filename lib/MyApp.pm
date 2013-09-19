@@ -16,8 +16,9 @@ use POSIX;
 use GD::SecurityImage;
 use MIME::Base64;
 
-use parent 'Exporter';
-
+use Exporter;
+our @ISA = qw(Exporter);
+our @EXPORT = qw($EMOTICONS_DIR %EMOTICONS emoticonize unemoticonize);
 
 ################
 ### settings ###
@@ -567,6 +568,5 @@ sub destroy_captcha {
     session 'captcha_mime' => undef;
 };
 
-our @EXPORT = qw($EMOTICONS_DIR %EMOTICONS emoticonize, unemoticonize);
 
 true;
