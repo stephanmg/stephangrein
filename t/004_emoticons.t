@@ -27,8 +27,7 @@ my @strings = qw/:) :( :P/;
 my $counter = 0;
 
 foreach my $key (keys %EMOTICONS) {
-    ok($key eq $key, "$key != $key");
- #   my $final_str = emoticonize($strings[$counter], %EMOTICONS);
-  #  ok ($final_str eq $EMOTICONS{$key}, "final string should be equal to $EMOTICONS{$key}, but it is $final_str.");
+    my $final_str = emoticonize($strings[$counter], \%EMOTICONS);
+    ok ($final_str eq $EMOTICONS{$key}, "final string should be equal to $EMOTICONS{$key}, but it is $final_str.");
     $counter++;
 }
