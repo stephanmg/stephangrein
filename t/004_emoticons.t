@@ -28,7 +28,7 @@ my $counter = 0;
 
 foreach my $key (keys %EMOTICONS) {
     my $final_str = emoticonize($strings[$counter], \%EMOTICONS);
-    my $clean_key =~ s!$key!\\!g;
+    my $clean_key = $key =~ s!$key!\\!g;
     if ($clean_key eq $strings[$counter]) {
         ok ($final_str eq $EMOTICONS{$key}, "final string should be equal to $EMOTICONS{$key}, but it is $final_str.");
     }
