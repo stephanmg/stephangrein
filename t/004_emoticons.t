@@ -22,10 +22,16 @@ use Test::More tests => 3;                      # last test to print
 
 use MyApp;
 use Dancer::Test;
-use vars qw(%EMOTICONS);
 
 my @strings = qw/:) :( :P/;
 my $counter = 0;
+
+my $EMOTICONS_DIR = '/images/emoticons';
+my %EMOTICONS = (
+    ":\)"  => qq!<img src="$EMOTICONS_DIR/happy\.jpg" alt="happy"/>!,
+    ":\("  => qq!<img src="$EMOTICONS_DIR/sad\.jpg" alt="sad"/>!,
+    ":P"   => qq!<img src="$EMOTICONS_DIR/tongue\.jpg" alt="tongue"/>!
+);
 
 foreach my $key (keys %EMOTICONS) {
     my $final_str = emoticonize($strings[$counter], %EMOTICONS);
