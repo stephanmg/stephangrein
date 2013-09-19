@@ -35,8 +35,8 @@ set 'emoticons' => '/lib/emoticons';
 #################
 ### emoticons ###
 #################
-my $EMOTICONS_DIR = '/images/emoticons';
-my %EMOTICONS = (
+our $EMOTICONS_DIR = '/images/emoticons';
+our %EMOTICONS = (
     ":\)"  => qq!<img src="$EMOTICONS_DIR/happy\.jpg" alt="happy"/>!,
     ":\("  => qq!<img src="$EMOTICONS_DIR/sad\.jpg" alt="sad"/>!,
     ":P"   => qq!<img src="$EMOTICONS_DIR/tongue\.jpg" alt="tongue"/>!
