@@ -18,7 +18,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;                      # last test to print
+use Test::More tests => 3;                      # last test to print
 
 use MyApp;
 use Dancer::Test;
