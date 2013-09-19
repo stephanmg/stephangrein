@@ -16,6 +16,9 @@ use POSIX;
 use GD::SecurityImage;
 use MIME::Base64;
 
+use parent 'Exporter';
+
+
 ################
 ### settings ###
 ################
@@ -41,6 +44,8 @@ our %EMOTICONS = (
     ":\("  => qq!<img src="$EMOTICONS_DIR/sad\.jpg" alt="sad"/>!,
     ":P"   => qq!<img src="$EMOTICONS_DIR/tongue\.jpg" alt="tongue"/>!
 );
+
+our @EXPORT = qw($EMOTICONS_DIR %EMOTICONS);
 
 ###################################################
 ### encode/decode smileys represetend by images ###
