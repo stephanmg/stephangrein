@@ -45,7 +45,6 @@ our %EMOTICONS = (
     ":P"   => qq!<img src="$EMOTICONS_DIR/tongue\.jpg" alt="tongue"/>!
 );
 
-our @EXPORT = qw($EMOTICONS_DIR %EMOTICONS);
 
 ###################################################
 ### encode/decode smileys represetend by images ###
@@ -567,5 +566,7 @@ sub destroy_captcha {
     session 'captcha_data' => undef;
     session 'captcha_mime' => undef;
 };
+
+our @EXPORT = qw($EMOTICONS_DIR %EMOTICONS emoticonize, unemoticonize);
 
 true;
