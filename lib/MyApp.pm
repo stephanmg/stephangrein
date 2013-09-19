@@ -41,9 +41,9 @@ set 'emoticons' => '/lib/emoticons';
 #################
 our $EMOTICONS_DIR = '/images/emoticons';
 our %EMOTICONS = (
-    ":\)"  => qq!<img src="$EMOTICONS_DIR/happy\.jpg" alt="happy"/>!,
-    ":\("  => qq!<img src="$EMOTICONS_DIR/sad\.jpg" alt="sad"/>!,
-    ":P"   => qq!<img src="$EMOTICONS_DIR/tongue\.jpg" alt="tongue"/>!
+    ':\)'   => qq!<img src="$EMOTICONS_DIR/happy\.jpg" alt="happy"/>!,
+    ':\('  => qq!<img src="$EMOTICONS_DIR/sad\.jpg" alt="sad"/>!,
+    ':P'   => qq!<img src="$EMOTICONS_DIR/tongue\.jpg" alt="tongue"/>!
 );
 
 
