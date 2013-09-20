@@ -46,7 +46,6 @@ our %EMOTICONS = (
     ':P'   => qq!<img src="$EMOTICONS_DIR/tongue\.jpg" alt="tongue"/>!
 );
 
-
 ###################################################
 ### encode/decode smileys represetend by images ###
 ###################################################
@@ -160,7 +159,8 @@ get '/Blog' => sub {
     'entries' => $entries,
     'comments' => $comments,
 	#	'entries' => $sth->fetchall_hashref('id'),
-    'navigation' => $temp
+    'navigation' => $temp,
+    'emoticons' => \%EMOTICONS
 	};
 };
 

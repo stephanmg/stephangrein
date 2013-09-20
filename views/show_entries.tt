@@ -19,16 +19,23 @@
             <div id="content-in">
 
 <% IF session.user %>
+ <% IF emoticons %>
+  <div id="emoticons">
+  <% FOREACH key in emoticons.keys %>
+    <a href="#" id="<%key%>" title="<%key%>" onclick="Emoticons('<%key%>')"><% emoticons.$key%></a><br />
+  <%END%>
+  </div>
+  <% END%>  
   <form action="<% add_entry_url %>" method=post class=add-entry>
     <dl>
       <dt>Title:
       <dd><input type=text size=30 name=title>
       <dt>Text:
-      <dd><textarea name=text rows=5 cols=40></textarea>
+      <dd><textarea id="emoticons_form" name=text rows=5 cols=40></textarea>
       <dd><input type=submit value=Share>
     </dl>
   </form>
-<% END %>
+ <% END %>
 <ul class=entries>
 <% IF entries.size %>
   <% FOREACH id IN entries.keys.nsort %>

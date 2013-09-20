@@ -19,6 +19,14 @@
     <link rel="stylesheet" media="print" type="text/css" href="<% request.uri_base %>/css/print.css" />
 
     <title>www stephangrein de | Academic self-portrayal</title>
+    <script type="text/javascript">
+    function Emoticons(mein_text) {
+      var currentText = document.getElementById("emoticons_form");
+      currentText.value += " ";
+      currentText.value += mein_text;
+      currentText.focus();
+    }
+    </script>
 </head>
 
 <body>
