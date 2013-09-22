@@ -1,28 +1,47 @@
-########################### 
-### www stephangrein de ###
-###########################
+#
+#===============================================================================
+#
+#         FILE: MyApp.pm
+#
+#  DESCRIPTION: Module for dynamics webpage www stephangrein de
+#
+#        FILES: ---
+#         BUGS: ---
+#        NOTES: for TODOS see TODOS textfile in parent directory
+#       AUTHOR: stephan (stephan@syntaktischer-zucker.de)
+# ORGANIZATION: private
+#      VERSION: 0.1
+#     REVISION: see git log
+#===============================================================================
+#
+# header {{{
+## package's name {{{
 package MyApp;
+## }}}
+
+## modules {{{
 use Template;
 use Dancer ':syntax';
 use Dancer::Plugin::SiteMap;
 use Dancer::Plugin::DirectoryView;
 use Dancer::Plugin::Auth::Htpasswd;
-set layout => 'new_main'; # set main layout
-our $VERSION = '0.1';
 use DBI;
 use File::Slurp;
 use Crypt::SaltedHash;
 use POSIX;
 use GD::SecurityImage;
 use MIME::Base64;
-
 use Exporter;
+## }}}
+
+## exports {{{
 our @ISA = qw(Exporter);
 our @EXPORT = qw($EMOTICONS_DIR %EMOTICONS emoticonize unemoticonize);
+## }}}
 
-################
-### settings ###
-################
+## settings {{{
+our $VERSION = '0.1';
+set layout => 'new_main';
 set 'session' => 'Simple';
 set 'database' => './lib/test.db';
 set 'username' => 'admin';
@@ -34,21 +53,20 @@ set 'emoticons' => '/lib/emoticons';
 #set 'show_errors' => 1;
 #set 'access_log' => 1;
 #set 'warnings' => 1;
+## }}}
+# }}}
 
-
-#################
-### emoticons ###
-#################
+# emoticons {{{
+## images {{{
 our $EMOTICONS_DIR = '/images/emoticons';
 our %EMOTICONS = (
     ':\)'   => qq!<img src="$EMOTICONS_DIR/happy\.jpg" alt="happy"/>!,
     ':\('  => qq!<img src="$EMOTICONS_DIR/sad\.jpg" alt="sad"/>!,
     ':P'   => qq!<img src="$EMOTICONS_DIR/tongue\.jpg" alt="tongue"/>!
 );
+## }}}
 
-###################################################
-### encode/decode smileys represetend by images ###
-###################################################
+## emoticionize {{{
 sub emoticonize {
     my $text = shift; # the plain text string containing smileys
     my $emoticons = shift;
@@ -59,7 +77,9 @@ sub emoticonize {
     }
    return $text;
 }
+## }}}
 
+## unemoticonize {{{
 sub unemoticonize {
     my $text = shift; # the string with encoded smileys as images
     my $emoticons = shift;
@@ -71,10 +91,10 @@ sub unemoticonize {
     
     return $text;   
 }
+## }}}
+# }}}
 
-#########################
-### navigation string ###
-#########################
+# navigation string {{{
 use constant NAVIGATION => 
     qq(<ul class="box">
     <li><a href="/">Home</a></li> 
@@ -86,11 +106,10 @@ use constant NAVIGATION =>
     <li><a href="/Imprint">Imprint</a></li>
     <li><a href="/Blog">Blog</a></li>
     </ul>);
+# }}}
 
-
-#####################
-### flash message ### 
-#####################
+# main page {{{
+## flash message {{{
 my $flash;
 
 sub set_flash {
@@ -106,7 +125,9 @@ sub get_flash {
 
 	return $msg;
 }
+## }}}
 
+## database handling {{{
 sub connect_db {
 	my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('database')) or
 		die $DBI::errstr;
@@ -122,6 +143,9 @@ sub init_db {
 	$db->do($schema) or die $db->errstr;
 }
 
+## }}}
+
+## hooks {{{
 #hook 'before' => sub {
 before_template sub {
 	my $tokens = shift;
@@ -130,7 +154,10 @@ before_template sub {
 	$tokens->{'login_url'} = uri_for('/Blog/login');
 	$tokens->{'logout_url'} = uri_for('/Blog/logout');
 };
+## }}}
 
+## routes {{{
+### '/Blog' {{{
 get '/Blog' => sub {
 	my $db = connect_db();
 	my $sql = 'select id, title, text, author, datum from entries order by id desc';
@@ -163,7 +190,9 @@ get '/Blog' => sub {
     'emoticons' => \%EMOTICONS
 	};
 };
+### }}}
 
+### '/Blog/delete_comment/*' {{{
 any ['post', 'get'] => '/Blog/delete_comment/*' => sub {
     my $err;
     my ($id) = splat;
@@ -211,9 +240,10 @@ any ['post', 'get'] => '/Blog/delete_comment/*' => sub {
             redirect '/Blog';
      }
     }
-
 };
+### }}}
 
+### '/Blog/edit_comment/*' {{{
 any ['get', 'post'] => '/Blog/edit_comment/*' => sub {
 	my $err;
   my ($id) = splat; # get wildcard id
@@ -263,11 +293,9 @@ any ['get', 'post'] => '/Blog/edit_comment/*' => sub {
         }
     }
 };
+### }}}
 
-
-
-
-
+### '/Blog/comment/*' {{{
 any ['post', 'get'] => '/Blog/comment/*' => sub {
     my $err;
     my ($id) = splat;
@@ -304,8 +332,9 @@ any ['post', 'get'] => '/Blog/comment/*' => sub {
     }
 }
 };
+### }}}
 
-
+### '/Blog/delete/*' {{{
 any ['post', 'get'] => '/Blog/delete/*' => sub {
     my $err;
    my ($id) = splat;
@@ -356,7 +385,9 @@ any ['post', 'get'] => '/Blog/delete/*' => sub {
         }
     }
 };
+### }}}
 
+### '/Blog/edit/*' {{{
 any ['get', 'post'] => '/Blog/edit/*' => sub {
 	my $err;
   my ($id) = splat; # get wildcard id
@@ -401,7 +432,9 @@ any ['get', 'post'] => '/Blog/edit/*' => sub {
         redirect '/Blog';
     }
 };
+### }}}
 
+### '/Blog/add' {{{
 post '/Blog/add' => sub {
 	if ( not session('user') ) {
 		send_error("Not logged in", 401);
@@ -422,9 +455,10 @@ post '/Blog/add' => sub {
 set_flash('New entry posted!');
 	redirect '/Blog';
 };
+### }}}
 
+### '/Blog/login' {{{
 any ['get', 'post'] => '/Blog/login' => sub {
-
 	my $err;
 	my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
 		die $DBI::errstr;
@@ -484,27 +518,20 @@ any ['get', 'post'] => '/Blog/login' => sub {
     {
     layout => "new_main"
     };
-
 };
+### }}}
 
+### '/Blog/logout' {{{
 get '/Blog/logout' => sub {
  destroy_captcha();
 	session->destroy;
 	set_flash('You are logged out.');
 	redirect '/Blog';
 };
+### }}}
+## }}}
 
-### check for login status otherwise show login form
-#get '/Blog/manage' => sub {
-#    template 'manage.tt' => {
-#    }
-#};
-
-init_db();
-
-######################
-### handle a route ###
-######################
+## generic route handler {{{
 sub route_callback {
     my $route = shift;
     my $template = $route;
@@ -520,16 +547,16 @@ sub route_callback {
         };
     };
 }
-######################################################
-### extract routes from navigation and handle them ###
-######################################################
+## }}}
+
+## handle routes from navigation string {{{
 my @routes = grep { $_ ne "Blog" } NAVIGATION =~ m!<li><a href="/(.*?)">.*?</li>!g;
 get '/' . $_ => route_callback($_, NAVIGATION) for @routes;
+## }}}
+# }}}
 
-
-###############
-### captcha ###
-###############
+# captcha {{{
+## security pass {{{
 sub random_pass {
     my $length = shift;
     my $captcha;
@@ -538,7 +565,9 @@ sub random_pass {
     }
     return $captcha;
 }
+## }}}
 
+## generate {{{
 sub generate_capture {
    my $captcha = random_pass(9);
    my ($data, $mime, $rnd) = GD::SecurityImage->new(
@@ -562,12 +591,18 @@ sub generate_capture {
     session 'captcha_data' => $encoded;
     session 'captcha_mime' => $mime;
 };
+## }}}
 
+## destroy {{{
 sub destroy_captcha {
     session 'captcha_str' => undef;
     session 'captcha_data' => undef;
     session 'captcha_mime' => undef;
 };
+## }}}
+# }}}
 
-
+# initializer {{{
+init_db();
 true;
+# }}}
