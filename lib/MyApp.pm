@@ -15,11 +15,11 @@
 #===============================================================================
 #
 # header {{{
-## package's name {{{
+## {{{ package's name 
 package MyApp;
 ## }}}
 
-## modules {{{
+## {{{ modules 
 use Template;
 use Dancer ':syntax';
 use Dancer::Plugin::SiteMap;
@@ -34,12 +34,12 @@ use MIME::Base64;
 use Exporter;
 ## }}}
 
-## exports {{{
+## {{{ exports
 our @ISA = qw(Exporter);
 our @EXPORT = qw($EMOTICONS_DIR %EMOTICONS emoticonize unemoticonize);
 ## }}}
 
-## settings {{{
+## {{{ settings 
 our $VERSION = '0.1';
 set layout => 'new_main';
 set 'session' => 'Simple';
@@ -57,7 +57,7 @@ set 'emoticons' => '/lib/emoticons';
 # }}}
 
 # emoticons {{{
-## images {{{
+## {{{ images 
 our $EMOTICONS_DIR = '/images/emoticons';
 our %EMOTICONS = (
     ':\)'   => qq!<img src="$EMOTICONS_DIR/happy\.jpg" alt="happy"/>!,
@@ -66,7 +66,7 @@ our %EMOTICONS = (
 );
 ## }}}
 
-## emoticionize {{{
+## {{{ emoticionize 
 sub emoticonize {
     my $text = shift; # the plain text string containing smileys
     my $emoticons = shift;
@@ -79,7 +79,7 @@ sub emoticonize {
 }
 ## }}}
 
-## unemoticonize {{{
+## {{{ unemoticonize 
 sub unemoticonize {
     my $text = shift; # the string with encoded smileys as images
     my $emoticons = shift;
@@ -109,7 +109,7 @@ use constant NAVIGATION =>
 # }}}
 
 # main page {{{
-## flash message {{{
+## {{{ flash message 
 my $flash;
 
 sub set_flash {
@@ -127,7 +127,7 @@ sub get_flash {
 }
 ## }}}
 
-## database handling {{{
+## {{{ database handling 
 sub connect_db {
 	my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('database')) or
 		die $DBI::errstr;
@@ -145,7 +145,7 @@ sub init_db {
 
 ## }}}
 
-## hooks {{{
+## {{{ hooks 
 #hook 'before' => sub {
 before_template sub {
 	my $tokens = shift;
@@ -156,8 +156,8 @@ before_template sub {
 };
 ## }}}
 
-## routes {{{
-### '/Blog' {{{
+## {{{ routes 
+## {{{ '/Blog' 
 get '/Blog' => sub {
 	my $db = connect_db();
 	my $sql = 'select id, title, text, author, datum from entries order by id desc';
@@ -192,7 +192,7 @@ get '/Blog' => sub {
 };
 ### }}}
 
-### '/Blog/delete_comment/*' {{{
+## {{{ '/Blog/delete_comment/*' 
 any ['post', 'get'] => '/Blog/delete_comment/*' => sub {
     my $err;
     my ($id) = splat;
@@ -243,7 +243,7 @@ any ['post', 'get'] => '/Blog/delete_comment/*' => sub {
 };
 ### }}}
 
-### '/Blog/edit_comment/*' {{{
+## {{{ '/Blog/edit_comment/*' 
 any ['get', 'post'] => '/Blog/edit_comment/*' => sub {
 	my $err;
   my ($id) = splat; # get wildcard id
@@ -295,7 +295,7 @@ any ['get', 'post'] => '/Blog/edit_comment/*' => sub {
 };
 ### }}}
 
-### '/Blog/comment/*' {{{
+## {{{ '/Blog/comment/*' 
 any ['post', 'get'] => '/Blog/comment/*' => sub {
     my $err;
     my ($id) = splat;
@@ -334,7 +334,7 @@ any ['post', 'get'] => '/Blog/comment/*' => sub {
 };
 ### }}}
 
-### '/Blog/delete/*' {{{
+## {{{ '/Blog/delete/*' 
 any ['post', 'get'] => '/Blog/delete/*' => sub {
     my $err;
    my ($id) = splat;
@@ -387,7 +387,7 @@ any ['post', 'get'] => '/Blog/delete/*' => sub {
 };
 ### }}}
 
-### '/Blog/edit/*' {{{
+## {{{ '/Blog/edit/*' 
 any ['get', 'post'] => '/Blog/edit/*' => sub {
 	my $err;
   my ($id) = splat; # get wildcard id
@@ -434,7 +434,7 @@ any ['get', 'post'] => '/Blog/edit/*' => sub {
 };
 ### }}}
 
-### '/Blog/add' {{{
+## {{{ '/Blog/add' 
 post '/Blog/add' => sub {
 	if ( not session('user') ) {
 		send_error("Not logged in", 401);
@@ -457,7 +457,7 @@ set_flash('New entry posted!');
 };
 ### }}}
 
-### '/Blog/login' {{{
+## {{{ '/Blog/login' 
 any ['get', 'post'] => '/Blog/login' => sub {
 	my $err;
 	my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
@@ -521,7 +521,7 @@ any ['get', 'post'] => '/Blog/login' => sub {
 };
 ### }}}
 
-### '/Blog/logout' {{{
+## {{{ '/Blog/logout' 
 get '/Blog/logout' => sub {
  destroy_captcha();
 	session->destroy;
@@ -531,7 +531,7 @@ get '/Blog/logout' => sub {
 ### }}}
 ## }}}
 
-## generic route handler {{{
+## {{{ generic route handler 
 sub route_callback {
     my $route = shift;
     my $template = $route;
@@ -549,14 +549,14 @@ sub route_callback {
 }
 ## }}}
 
-## handle routes from navigation string {{{
+## {{{ handle routes from navigation string 
 my @routes = grep { $_ ne "Blog" } NAVIGATION =~ m!<li><a href="/(.*?)">.*?</li>!g;
 get '/' . $_ => route_callback($_, NAVIGATION) for @routes;
 ## }}}
 # }}}
 
 # captcha {{{
-## security pass {{{
+## {{{ security pass 
 sub random_pass {
     my $length = shift;
     my $captcha;
@@ -567,7 +567,7 @@ sub random_pass {
 }
 ## }}}
 
-## generate {{{
+## {{{ generate 
 sub generate_capture {
    my $captcha = random_pass(9);
    my ($data, $mime, $rnd) = GD::SecurityImage->new(
@@ -593,7 +593,7 @@ sub generate_capture {
 };
 ## }}}
 
-## destroy {{{
+## {{{ destroy 
 sub destroy_captcha {
     session 'captcha_str' => undef;
     session 'captcha_data' => undef;
