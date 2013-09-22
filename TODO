@@ -17,7 +17,6 @@ use one db with 3 tables (tables: auth, comments, entries)
 ###########
 ### low ###
 ###########
-insert smileys via javascript selection in browser? more usable but javascript. 
 split up initialize db and webapp parts?
 cleanup code
 user pages?
