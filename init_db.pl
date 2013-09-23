@@ -30,10 +30,9 @@ use Crypt::SaltedHash;
 	my $sql = 'insert into users (user, pass) values (?, ?)';
 	my $sth = $dbh->prepare($sql) or die $db->errstr;
 
-        my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
-        $csh->add('test');
-
+ my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
+ $csh->add('test');
 	$sth->execute("stephan", $csh->generate) or die $sth->errstr;
 	$sql = 'insert into users (user, pass) values (?, ?)';
 	$sth = $dbh->prepare($sql) or die $db->errstr;
-	$sth->execute("stephan2", $csh->generate) or die $sth->errstr;
+	$sth->execute("tina", $csh->generate) or die $sth->errstr;
