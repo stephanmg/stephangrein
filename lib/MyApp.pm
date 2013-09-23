@@ -71,6 +71,7 @@ sub emoticonize {
     my $text = shift; # the plain text string containing smileys
     my $emoticons = shift;
 
+
     for my $key (keys %$emoticons) {
         my $val = $emoticons->{$key};
         $text =~ s!$key!$val!g;
@@ -210,9 +211,7 @@ any ['post', 'get'] => '/Blog/delete_comment/*' => sub {
         my $author = $result->{'author'};
         my $title = $result->{'title'};
         my $pretext = $result->{'text'};
-        $pretext =~ s!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!:\)!g;
-        $pretext =~ s!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!:\(!g;
-        my $text = $pretext;
+        my $text = unemoticonize($pretext, \%EMOTICONS);
 
         template 'delete_comment.tt' => {
             delete_comment_url => uri_for('/Blog/delete_comment'),
@@ -258,8 +257,7 @@ any ['get', 'post'] => '/Blog/edit_comment/*' => sub {
 
         $sth->execute($id);
 		    my $pretext = ($sth->fetchrow_hashref)->{'text'};
-        $pretext =~ s!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!:\)!g;
-        $pretext =~ s!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!:\(!g;
+        $pretext = unemoticonize($pretext, \%EMOTICONS);
         
         template 'edit_comment.tt' => {
             edit_comment_url => uri_for('/Blog/edit_comment'),
@@ -280,8 +278,7 @@ any ['get', 'post'] => '/Blog/edit_comment/*' => sub {
             $sql = 'update comments set text=? where id = ?';
             $sth = $dbh->prepare($sql) or die $dbh->errstr;
             my $pretext = params->{'text'};
-            $pretext =~ s!:\)!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!g;
-            $pretext =~ s!:\(!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!g;
+            $pretext = emoticonize($pretext, \%EMOTICONS);
             $sth->execute($pretext, $id);
             if (params->{'titel'} ne "") {
                 $sql = 'update comments set title=? where id = ?';
@@ -316,8 +313,7 @@ any ['post', 'get'] => '/Blog/comment/*' => sub {
         
 
 		    my $pretext = params->{'text'};
-        $pretext =~ s!:\)!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!g;
-        $pretext =~ s!:\(!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!g;
+        $pretext = emoticonize($pretext, \%EMOTICONS);
         my $text = $pretext;
         my $author = session('user'); # params->{'author'};
         my $title = params->{'titel'};
@@ -352,9 +348,7 @@ any ['post', 'get'] => '/Blog/delete/*' => sub {
         my $author = $result->{'author'};
         my $title = $result->{'title'};
         my $pretext = $result->{'text'};
-        $pretext =~ s!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!:\)!g;
-        $pretext =~ s!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!:\(!g;
-        my $text = $pretext;
+        my $text = unemoticonize($pretext, \%EMOTICONS);
 
         template 'delete.tt' => {
             delete_url => uri_for('/Blog/delete'),
@@ -402,8 +396,7 @@ any ['get', 'post'] => '/Blog/edit/*' => sub {
 
         $sth->execute($id);
 		    my $pretext = ($sth->fetchrow_hashref)->{'text'};
-        $pretext =~ s!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!:\)!g;
-        $pretext =~ s!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!:\(!g;
+        $pretext = unemoticonize($pretext, \%EMOTICONS);
         
         template 'edit.tt' => {
             edit_url => uri_for('/Blog/edit'),
@@ -416,8 +409,7 @@ any ['get', 'post'] => '/Blog/edit/*' => sub {
         my $sth = $dbh->prepare($sql) or die $dbh->errstr;
 
         my $pretext = params->{'text'};
-        $pretext =~ s!:\)!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!g;
-        $pretext =~ s!:\(!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!g;
+        $pretext = emoticonize($pretext, \%EMOTICONS);
         $sth->execute($pretext, $id);
         if (params->{'titel'} ne "") {
             $sql = 'update entries set title=? where id = ?';
@@ -446,9 +438,7 @@ post '/Blog/add' => sub {
   my $now = localtime;
 
     my $pretext = params->{'text'};
-    $pretext =~ s!:\)!<img src="/images/emoticons/happy\.jpg" alt="happy"/>!g;
-    $pretext =~ s!:\(!<img src="/images/emoticons/sad\.jpg" alt="sad"/>!g;
-	#$sth->execute(params->{'title'}, params->{'text'}) or die $sth->errstr;
+    $pretext = emoticonize($pretext, \%EMOTICONS);
 	$sth->execute(params->{'title'}, $pretext, session('user'), $now) or die $sth->errstr;
 
 

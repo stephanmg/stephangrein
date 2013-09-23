@@ -3,12 +3,11 @@
 #
 #         FILE: 004_emoticons.t
 #
-#  DESCRIPTION: 
+#  DESCRIPTION: testing emoticons subroutines
 #
-#        FILES: ---
 #         BUGS: ---
 #        NOTES: ---
-#       AUTHOR: YOUR NAME (), 
+#       AUTHOR: stephan (stephan@syntaktischer-zucker.de) 
 # ORGANIZATION: 
 #      VERSION: 1.0
 #      CREATED: 09/18/2013 17:20:03

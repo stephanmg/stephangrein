@@ -1,7 +1,6 @@
 ############
 ### high ###
 ############
-global hash containing smiley name/path to smiley, implement subs emoticonize/unemoticionize and use them  -> implemented -> add tests and more smileys (copyright!?)
 if session('user') == admin => true: can do anything since admin, use this check in subroutines
 use ssl / https for page with lighttpd 
 add more perl tests
@@ -11,7 +10,6 @@ add more perl tests
 ##############
 user add/password modify possibility => send email with perl to my email adress for request (+captcha usage)
 show only 50 entries, and then make links to access more items.
-dont insert images in database, instead only insert :) and :( and when parsing entries replace it, the same can be done when edit is needed, that is read from database insert it into database without images (only one route /Blog needs to do replacement and edit does not to reverse replace the images to :) and :( !!!)
 use one db with 3 tables (tables: auth, comments, entries)
 
 ###########
@@ -21,3 +19,4 @@ split up initialize db and webapp parts?
 cleanup code
 user pages?
 show login status on all pages maybe? not only on blog site?
+smiley copyright?
