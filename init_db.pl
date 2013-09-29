@@ -33,6 +33,11 @@ use Crypt::SaltedHash;
  my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
  $csh->add('test');
 	$sth->execute("stephan", $csh->generate) or die $sth->errstr;
+
+
 	$sql = 'insert into users (user, pass) values (?, ?)';
 	$sth = $dbh->prepare($sql) or die $db->errstr;
+
+ my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
+ $csh->add('UgRAUU#2');
 	$sth->execute("tina", $csh->generate) or die $sth->errstr;

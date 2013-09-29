@@ -559,11 +559,11 @@ sub random_pass {
 
 ## {{{ generate 
 sub generate_capture {
-   my $captcha = random_pass(9);
+   my $captcha = random_pass(8);
    my ($data, $mime, $rnd) = GD::SecurityImage->new(
     width => 100,
     height => 60,
-    lines => 4,
+    lines => 2,
     thickness => 1,
     gd_font => 'Giant',
     ptsize => 160,
@@ -571,7 +571,7 @@ sub generate_capture {
     )
     ->random($captcha)
     ->create(qw/normal circle #02AAFC #02AAFC/)
-    ->particle(400)
+    ->particle(200)
     ->out;
     
     # base64 encode image here
