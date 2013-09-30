@@ -597,7 +597,36 @@ sub destroy_captcha {
 ## }}}
 # }}}
 
+# sendmail {{{
+sub send_mail {
+    use Net::SMTP::SSL;
+    my $to = shift;
+    my $message = shift;
+    my $account='admin@stephangrein.de';
+    my $password='password';
+    my $smtp = Net::SMTP::SSL->new(
+        Host => 'mail.unix.io',
+        Port => 587,
+        Timeout => 120
+        ); 
+    die "Couldn't open connection: $!" if (!defined $smtp);
+
+    $smtp->auth($account, $password);
+    $smtp->mail('admin@stephangrein.de');
+    $smtp->to($to);
+    $smtp->data();
+    $smtp->datasend("To: $to\n");
+    $smtp->datasend("From: admin\@stephangrein.de\n");
+    $smtp->datasend("Subject: Your user account on: wwww stephangrein de\n");
+    $smtp->datasend("\n");
+    $smtp->datasend($message . "\n");
+    $smtp->dataend();
+    $smtp->quit; 
+}
+# }}}
+
 # initializer {{{
 init_db();
 true;
+#send_mail("foo", 'mail@stephangrein.de');
 # }}}

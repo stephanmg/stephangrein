@@ -2,7 +2,7 @@
 ### high ###
 ############
 use ssl / https for page with lighttpd 
-add more perl tests
+split up initialize db and webapp parts?
 cleanup directory (databases and schemata)
 
 ##############
@@ -15,8 +15,8 @@ use one db with 3 tables (tables: auth, comments, entries) -> also important
 ###########
 ### low ###
 ###########
-split up initialize db and webapp parts?
 cleanup code in general
 user pages?
 show login status on all pages maybe? not only on blog site?
 smiley copyright?
+more perl tests

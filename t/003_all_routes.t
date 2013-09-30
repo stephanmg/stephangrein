@@ -13,5 +13,4 @@ my $route;
 foreach (@routes) {
     $route = "/" . $_;
     route_exists [GET => $route], "Route >> $route << does exist.";
- #   reponse_status_is [GET => $route], 200, "Response status is 200.";
 }
