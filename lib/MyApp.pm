@@ -155,11 +155,8 @@ sub init_db {
 ## }}}
 
 ## {{{ hooks 
-#hook 'before' => sub {
-before_template sub {
+hook 'before_template_render' => sub {
 	my $tokens = shift;
-	
-	#$tokens->{'css_url'} = request->base . 'css/style.css';
 	$tokens->{'login_url'} = uri_for('/Blog/login');
 	$tokens->{'logout_url'} = uri_for('/Blog/logout');
 };
