@@ -9,8 +9,8 @@ cleanup directory (databases and schemata)
 ### middle ###
 ##############
 user add/password modify possibility => send email with perl to my email adress for request (+captcha usage)
-show only 50 entries, and then make links to access more items. -> important
-use one db with 3 tables (tables: auth, comments, entries) -> also important
+show only 50 entries, and then make links to access more items.
+use one db with 3 tables (tables: auth, comments, entries) 
 
 ###########
 ### low ###
