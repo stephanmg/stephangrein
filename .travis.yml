@@ -22,6 +22,7 @@ install:
    - cpanm -q -n GD::SecurityImage
    - cpanm -q -n Dancer::Plugin::Captcha::SecurityImage 
    - cpanm -q -n MIME::Lite
+   - cpanm -q -n Net::SMTP
 
 notifications:
    recipients:
