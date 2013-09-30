@@ -21,6 +21,7 @@ install:
    - cpanm -q -n GD
    - cpanm -q -n GD::SecurityImage
    - cpanm -q -n Dancer::Plugin::Captcha::SecurityImage 
+   - cpanm -q -n MIME::Lite
 
 notifications:
    recipients:
