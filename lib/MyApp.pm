@@ -33,6 +33,10 @@ use GD::SecurityImage;
 use MIME::Base64;
 use Exporter;
 ## }}}
+#
+## {{{ warnings
+no warnings qw{qw}; 
+## }}}
 
 ## {{{ exports
 our @ISA = qw(Exporter);
@@ -53,6 +57,10 @@ set 'emoticons' => '/lib/emoticons';
 #set 'show_errors' => 1;
 #set 'access_log' => 1;
 #set 'warnings' => 1;
+## }}}
+
+## {{{ additional variables 
+my $admin_user = 'admin';
 ## }}}
 # }}}
 
@@ -228,7 +236,7 @@ any ['post', 'get'] => '/Blog/delete_comment/*' => sub {
         my $results = $sth->fetchrow_hashref;
         my $author = $results->{'author'};
         my $article_id = $results->{'article_id'};
-        if ($author ne session('user')) {
+        if ($author ne session('user') && session('user') ne $admin_user) {
             set_flash("Can only deleted own comments! Comment no. " . $id . " is not your comment for entry no. " . $article_id . ". Refused.");
             redirect '/Blog';
         } else {
@@ -271,7 +279,7 @@ any ['get', 'post'] => '/Blog/edit_comment/*' => sub {
         $sth->execute($id);
         
         my $author = ($sth->fetchrow_hashref)->{'author'};
-        if ($author ne session('user')) {
+        if ($author ne session('user') && session('user') ne $admin_user) {
             set_flash("Can only edit own comments. Comment No. " . $id . " is not your own comment. Refused.");
             redirect '/Blog';
         } else {
@@ -363,7 +371,7 @@ any ['post', 'get'] => '/Blog/delete/*' => sub {
         my $sth = $dbh->prepare($sql) or die $dbh->errstr;
         $sth->execute($id);
 		    my $author = ($sth->fetchrow_hashref)->{'author'};
-        if ($author ne session('user')) {
+        if ($author ne session('user') && session('user') ne $admin_user) {
             set_flash("Can only deleted own entries! Entry no. " . $id . " is not your entry. Refused.");
             redirect '/Blog';
         } else {

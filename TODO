@@ -1,7 +1,6 @@
 ############
 ### high ###
 ############
-if session('user') == admin => true: can do anything since admin, use this check in subroutines
 use ssl / https for page with lighttpd 
 add more perl tests
 cleanup directory (databases and schemata)
@@ -17,7 +16,7 @@ use one db with 3 tables (tables: auth, comments, entries) -> also important
 ### low ###
 ###########
 split up initialize db and webapp parts?
-cleanup code
+cleanup code in general
 user pages?
 show login status on all pages maybe? not only on blog site?
 smiley copyright?
