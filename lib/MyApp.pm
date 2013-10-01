@@ -471,10 +471,15 @@ any ['get', 'post'] => '/Blog/useradd' => sub {
         set_flash("User exists. If you want to recover your password send mail to site admin please.");
         redirect '/Blog/';
    } else {
-        sendmail(params->{mail}, random_pass(6), params->{username});
+        my $randompass = random_pass(6);
+        sendmail(params->{mail}, $randompass, params->{username});
         set_flash("Send email to: " . params->{mail} . " with login details.");
+	 my $sql = 'insert into users (user, pass) values (?, ?)';
+	 $sth = $dbh->prepare($sql) or die $dbh->errstr;
+ my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
+ $csh->add($randompass);
+	$sth->execute(params->{username}, $csh->generate) or die $sth->errstr;
         redirect '/Blog';
-        # insert into table TODO
     }
     }
 }
