@@ -24,6 +24,7 @@ install:
    - cpanm -q -n MIME::Lite
    - cpanm -q -n Net::SMTP
    - cpanm -q -n Net::SMTP::SSL
+   - cpanm -q -n Net::SMTP::TLS
 
 notifications:
    recipients:
