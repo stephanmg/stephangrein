@@ -159,6 +159,7 @@ hook 'before_template_render' => sub {
 	my $tokens = shift;
 	$tokens->{'login_url'} = uri_for('/Blog/login');
 	$tokens->{'logout_url'} = uri_for('/Blog/logout');
+  $tokens->{'useradd_url'} = uri_for('/Blog/useradd');
 };
 ## }}}
 
@@ -452,6 +453,52 @@ set_flash('New entry posted!');
 };
 ### }}}
 
+## {{{{ '/Blog/useradd'
+any ['get', 'post'] => '/Blog/useradd' => sub {
+    my $err;
+    	if ( request->method() eq "POST" ) {
+    my $captcha_str2 = params->{captcha_str2};
+    if (!$captcha_str2 || $captcha_str2 ne session('captcha_str')) {
+        redirect '/Blog';
+        set_flash("Captcha empty or wrong!!!!!.");
+    } else {
+   my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
+		    die $DBI::errstr;
+    my $sth = $dbh->prepare("SELECT user FROM users WHERE user = ?");
+    $sth->execute(params->{username});
+    my $res = $sth->fetchrow_hashref();
+    if ($res) {
+        set_flash("User exists. If you want to recover your password send mail to site admin please.");
+        redirect '/Blog/';
+   } else {
+        sendmail(params->{mail}, random_pass(6), params->{username});
+        set_flash("Send email to: " . params->{mail} . " with login details.");
+        redirect '/Blog';
+        # insert into table TODO
+    }
+    }
+}
+#
+generate_capture();
+    my $captcha_data = session('captcha_data'); 
+    my $captcha_mime = session('captcha_mime');
+
+
+   my $temp = NAVIGATION;
+   $temp =~ s!<li>(<a href="/Blog/login">.*?</li>)!<li id="nav-active">$1!;
+
+	template 'useradd.tt' => { 
+		'err' => $err,
+    'navigation' => $temp,
+    'captcha_mime' => $captcha_mime,
+    'captcha_data' => $captcha_data
+    }, 
+    {
+    layout => "new_main"
+    };
+};
+## }}}
+
 ## {{{ '/Blog/login' 
 any ['get', 'post'] => '/Blog/login' => sub {
 	my $err;
@@ -479,7 +526,7 @@ any ['get', 'post'] => '/Blog/login' => sub {
     $pass = $res->{pass};
     if (!$user) {
         set_flash("Invalid user name: " . params->{username});
-        redirect '/Blog';
+        redirect '/Blog/useradd';
     } else {
         my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
         $csh->add(params->{password});
@@ -628,7 +675,7 @@ sub sendmail {
     $mailer->data;
     $mailer->datasend("Subject: Your user account on www stephangrein de\n");
     $mailer->datasend("From: admin\n");
-    $mailer->datasend("Dear attendee, \n\nyour login data are provided as: \n   User: ... \n   Pass: ...\n\nBest, Stephan");
+    $mailer->datasend("Dear attendee, \n\nyour login data are provided as: \n   User: $username \n   Pass: $userpass \n\nBest, Stephan");
     $mailer->dataend;
     $mailer->quit;
 }
