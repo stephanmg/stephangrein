@@ -598,35 +598,43 @@ sub destroy_captcha {
 # }}}
 
 # sendmail {{{
-sub send_mail {
-    use Net::SMTP::SSL;
+#===  FUNCTION  ================================================================
+#         NAME: sendmail
+#      PURPOSE: 
+#   PARAMETERS: to send mail address ('string'), userpass ('string'), username ('string')
+#      RETURNS: ????
+#  DESCRIPTION: ????
+#       THROWS: no exceptions
+#     COMMENTS: none
+#     SEE ALSO: n/a
+#===============================================================================
+sub sendmail {
+    use Net::SMTP::TLS;
+    use MyPass;
+    my $user = $mail{'user'};
+    my $password = $mail{'password'};
     my $to = shift;
-    my $message = shift;
-    my $account='admin@stephangrein.de';
-    my $password='password';
-    my $smtp = Net::SMTP::SSL->new(
-        Host => 'mail.unix.io',
-        Port => 587,
-        Timeout => 120
-        ); 
-    die "Couldn't open connection: $!" if (!defined $smtp);
+    my $userpass = shift;
+    my $username = shift;
+    my $mailer = new Net::SMTP::TLS(
+        'smtp.informatik.uni-frankfurt.de',
+        Hello    => 'wwww.stephangrein.de',
+        Port     =>  587,
+        User     => $user,
+        Password => $password);
 
-    $smtp->auth($account, $password);
-    $smtp->mail('admin@stephangrein.de');
-    $smtp->to($to);
-    $smtp->data();
-    $smtp->datasend("To: $to\n");
-    $smtp->datasend("From: admin\@stephangrein.de\n");
-    $smtp->datasend("Subject: Your user account on: wwww stephangrein de\n");
-    $smtp->datasend("\n");
-    $smtp->datasend($message . "\n");
-    $smtp->dataend();
-    $smtp->quit; 
+    $mailer->mail('grein@informatik.uni-frankfurt.de');
+    $mailer->to($to);
+    $mailer->data;
+    $mailer->datasend("Subject: Your user account on www stephangrein de\n");
+    $mailer->datasend("From: admin\n");
+    $mailer->datasend("Dear attendee, \n\nyour login data are provided as: \n   User: ... \n   Pass: ...\n\nBest, Stephan");
+    $mailer->dataend;
+    $mailer->quit;
 }
 # }}}
 
 # initializer {{{
 init_db();
 true;
-#send_mail("foo", 'mail@stephangrein.de');
 # }}}
