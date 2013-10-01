@@ -662,6 +662,7 @@ sub destroy_captcha {
 #===============================================================================
 sub sendmail {
     use Net::SMTP::TLS;
+    use lib '.';
     use MyPass;
     my $user = $mail{'user'};
     my $password = $mail{'password'};
