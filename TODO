@@ -2,7 +2,7 @@
 ### high ###
 ############
 verify if  existing user cannot be re-added for that: user add/password modify possibility => send email with perl to my email adress for request (+captcha usage) - additionally insert email addresses into auth table users maybe?/maybe use roles for more security
--> Login / Register (if using managment user can request new password or add new user)
+-> Login / Register (if using managment user can request new password or add new user) either he needs to input mail or only username depending if email is saved in table
 
 use ssl / https for page with lighttpd 
 split up initialize db and webapp parts?

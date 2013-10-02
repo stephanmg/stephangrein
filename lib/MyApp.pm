@@ -160,6 +160,7 @@ hook 'before_template_render' => sub {
 	$tokens->{'login_url'} = uri_for('/Blog/login');
 	$tokens->{'logout_url'} = uri_for('/Blog/logout');
   $tokens->{'useradd_url'} = uri_for('/Blog/useradd');
+  $tokens->{'password_recovery_url'} = uri_for('/Blog/recover_password');
 };
 ## }}}
 
@@ -453,7 +454,24 @@ set_flash('New entry posted!');
 };
 ### }}}
 
-## {{{{ '/Blog/useradd'
+## {{{ '/Blog/recover_password'
+any ['get', 'post'] => '/Blog/recover_password' => sub {
+my $err;
+# TODO: send email with new password either to user supplied email adress or if email stored in database in future select email adress of that particular user 
+   my $temp = NAVIGATION;
+   $temp =~ s!<li>(<a href="/Blog/login">.*?</li>)!<li id="nav-active">$1!;
+
+	template 'recover_password.tt' => { 
+		'err' => $err,
+    'navigation' => $temp,
+    }, 
+    {
+    layout => "new_main"
+    };
+};
+## }}}
+
+## {{{ '/Blog/useradd'
 any ['get', 'post'] => '/Blog/useradd' => sub {
     my $err;
     	if ( request->method() eq "POST" ) {
@@ -470,6 +488,7 @@ any ['get', 'post'] => '/Blog/useradd' => sub {
     if ($res) {
         set_flash("User exists. If you want to recover your password send mail to site admin please.");
         redirect '/Blog/';
+# TODO: redirect to password recovery maybe ...
    } else {
         my $randompass = random_pass(6);
         sendmail(params->{mail}, $randompass, params->{username});

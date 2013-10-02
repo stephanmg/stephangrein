@@ -53,7 +53,7 @@
 </ul>
 
 <% IF not session.user %>
-      <a href="<% login_url %>">log in</a> <% msg %>
+      <a href="<% login_url %>">log in</a> / <a href="<% useradd_url %>">register</a> <%msg %>
     <% ELSE %>
       <a href="<% logout_url %>">log out (<%session.user%>)</a> <%msg %>
   <% END %>
