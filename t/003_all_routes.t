@@ -1,12 +1,12 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;                      # last test to print
+use Test::More tests => 8;                      # last test to print
 use MyApp;
 use Dancer::Test;
 
 # routes to check
-my @routes=qw(CV About Publications Blog Blog/login Blog/logout);
+my @routes=qw(CV About Publications Blog Blog/login Blog/logout Blog/useradd Blog/recover_password);
 
 # check each route
 my $route;
