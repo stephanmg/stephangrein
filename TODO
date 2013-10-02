@@ -2,6 +2,7 @@
 ### high ###
 ############
 verify if  existing user cannot be re-added for that: user add/password modify possibility => send email with perl to my email adress for request (+captcha usage) - additionally insert email addresses into auth table users maybe?/maybe use roles for more security
+-> Login / Register (if using managment user can request new password or add new user)
 
 use ssl / https for page with lighttpd 
 split up initialize db and webapp parts?
@@ -12,6 +13,7 @@ cleanup directory (databases and schemata)
 ##############
 show only 50 entries, and then make links to access more items.
 use one db with 3 tables (tables: auth, comments, entries) 
+add table entry for email adress
 
 ###########
 ### low ###
