@@ -473,7 +473,7 @@ my $err;
         my $randompass = random_pass(6);
         sendmail(params->{mail}, $randompass, params->{username});
         set_flash("Send email to: " . params->{mail} . " with login details.");
-	 my $sql = 'update users (pass) values (?) WHERE user = ?';
+	 my $sql = 'update users set pass=? WHERE user = ?';
 	 $sth = $dbh->prepare($sql) or die $dbh->errstr;
  my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
  $csh->add($randompass);
@@ -496,6 +496,8 @@ generate_capture();
 	template 'recover_password.tt' => { 
 		'err' => $err,
     'navigation' => $temp,
+    'captcha_mime' => $captcha_mime,
+    'captcha_data' => $captcha_data
     }, 
     {
     layout => "new_main"
