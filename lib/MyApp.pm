@@ -457,9 +457,41 @@ set_flash('New entry posted!');
 ## {{{ '/Blog/recover_password'
 any ['get', 'post'] => '/Blog/recover_password' => sub {
 my $err;
-# TODO: send email with new password either to user supplied email adress or if email stored in database in future select email adress of that particular user 
+	my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
+		die $DBI::errstr;
+	if ( request->method() eq "POST" ) {
+    my $captcha_str2 = params->{captcha_str2};
+    if (!$captcha_str2 || $captcha_str2 ne session('captcha_str')) {
+        redirect '/Blog';
+        set_flash("Captcha empty or wrong.");
+    } else {
+    my $sth = $dbh->prepare("SELECT user FROM users WHERE user = ?");
+    $sth->execute(params->{username});
+    my $res = $sth->fetchrow_hashref();
+    if ($res) {
+    # TODO: send email with new password either to user supplied email adress or if email stored in database in future select email adress of that particular user
+        my $randompass = random_pass(6);
+        sendmail(params->{mail}, $randompass, params->{username});
+        set_flash("Send email to: " . params->{mail} . " with login details.");
+	 my $sql = 'update users (pass) values (?) WHERE user = ?';
+	 $sth = $dbh->prepare($sql) or die $dbh->errstr;
+ my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
+ $csh->add($randompass);
+	$sth->execute($csh->generate, params->{username}) or die $sth->errstr;
+        redirect '/Blog';
+    } else {
+        set_flash("User " . params->{username} . " does not exist. Go to /Blog/useradd page instead please.");
+        redirect '/Blog';
+    }
+  }
+}
+
    my $temp = NAVIGATION;
    $temp =~ s!<li>(<a href="/Blog/login">.*?</li>)!<li id="nav-active">$1!;
+
+generate_capture();
+    my $captcha_data = session('captcha_data'); 
+    my $captcha_mime = session('captcha_mime');
 
 	template 'recover_password.tt' => { 
 		'err' => $err,
