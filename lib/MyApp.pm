@@ -518,9 +518,8 @@ any ['get', 'post'] => '/Blog/useradd' => sub {
     $sth->execute(params->{username});
     my $res = $sth->fetchrow_hashref();
     if ($res) {
-        set_flash("User exists. If you want to recover your password send mail to site admin please.");
+        set_flash("User exists. If you want to recover your password send mail to site admin please or go to /Blog/recover_password.");
         redirect '/Blog/';
-# TODO: redirect to password recovery maybe ...
    } else {
         my $randompass = random_pass(6);
         sendmail(params->{mail}, $randompass, params->{username});
