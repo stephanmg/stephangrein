@@ -4,22 +4,23 @@
 add table entry for email adress -> then we can store user email when user is created (null is possible.)
 verify if  existing user cannot be re-added for that: user add/password modify possibility => send email with perl to my email adress for request (+captcha usage) - additionally insert email addresses into auth table users maybe?/maybe use roles for more security
 
-show all users who are online
 formular for userpage edit necessary (POST request needs to be handled)
+layout improvements of webpage in general
 
 split up initialize db and webapp parts?
 cleanup directory (databases and schemata to be consistent)
-use ssl / https for page with lighttpd 
 
 ##############
 ### middle ###
 ##############
 more perl tests
 use one db with 3 tables (tables: auth, comments, entries) 
+use ssl / https for page with lighttpd 
 
 ###########
 ### low ###
 ###########
 show only 50 entries, and then make links to access more items.
+user communication? (send message to users?, that is use a new table 'mailbox' message_from_user as foreign key, text, message_to_user from 'auth' as foreign key, and select all comments in mailbox of the current user 'my_user' from the mailbox table with the foreign key then)->add page which lists all availale users, too
 cleanup code in general
 smiley copyright issues
