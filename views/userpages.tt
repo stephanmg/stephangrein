@@ -16,28 +16,26 @@
             <hr class="noscreen" />
             
             <div id="content-in">
-<h2>Request new user account</h2>
+<h2><%user %>s user page</h2>
 <% IF err %><p class=error><strong>Error:</strong> <% err %><% END %>
-<form action="<% useradd_url %>" method=post>
+<% IF session.user == user %>
+<form action="<% userpages_url%>/<% user %>" method=post>
   <dl>
-    <dt>Username:
-    <dd><input type=text name=username>
+    <dt>Username: <%user %>
     <dt>Email:
-    <dd><input type=text name=mail>
+    <dd><input type=text name=mail value=<%email%>>
     <dt>About:
-    <dd><input type=text name=about>
-    <dt>Capture (see below):
-    <dd><input type=text name=captcha_str2>
-    <dd><input type=submit value=Request>
+    <textarea name="About" cols="50" rows="20"> <%about_text%> </textarea>
+    <dd><input type=submit value=Edit>
   </dl>
 </form>
-
-Capture:
-<img src="data:image/<%captcha_mime%>;base64,<% captcha_data %>"/>
-            </div> <!-- /content-in -->
-               
-
-
-
-
-
+<% ELSE %>
+  <dl>
+    <dt>Username:
+    <dd><%user%>
+    <dt>About:
+    <dd><%about_text%>
+    <dt>EMail:
+    <dd><%email%>
+<% END %>
+         </div> <!-- /content-in -->

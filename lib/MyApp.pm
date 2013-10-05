@@ -161,6 +161,7 @@ hook 'before_template_render' => sub {
 	$tokens->{'logout_url'} = uri_for('/Blog/logout');
   $tokens->{'useradd_url'} = uri_for('/Blog/useradd');
   $tokens->{'password_recovery_url'} = uri_for('/Blog/recover_password');
+  $tokens->{'userpages_url'} = uri_for('/Blog/users');
 };
 ## }}}
 
@@ -526,11 +527,11 @@ any ['get', 'post'] => '/Blog/useradd' => sub {
         my $randompass = random_pass(6);
         sendmail(params->{mail}, $randompass, params->{username});
         set_flash("Send email to: " . params->{mail} . " with login details.");
-	 my $sql = 'insert into users (user, pass) values (?, ?)';
+	 my $sql = 'insert into users (user, pass, email, about) values (?, ?, ?, ?)';
 	 $sth = $dbh->prepare($sql) or die $dbh->errstr;
  my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
  $csh->add($randompass);
-	$sth->execute(params->{username}, $csh->generate) or die $sth->errstr;
+	$sth->execute(params->{username}, $csh->generate, params->{mail}, params->{about}) or die $sth->errstr;
         redirect '/Blog';
     }
     }
@@ -553,6 +554,43 @@ generate_capture();
     {
     layout => "new_main"
     };
+};
+## }}}
+
+## {{{ '/Blog/users/*'
+any ['get', 'post'] => '/Blog/users/*' => sub {
+# if post form -> replace smileys in about text and validated if logged in,
+# if logged in logged in user must be same user as userpage ... to edit as by
+# edit_comment -> insert into table new/old values... TODO
+my $err;
+my ($user) = splat;
+my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
+		die $DBI::errstr;
+
+   my $temp = NAVIGATION;
+   $temp =~ s!<li>(<a href="/Blog/login">.*?</li>)!<li id="nav-active">$1!;
+
+    my $sth;
+    $sth  = $dbh->prepare("SELECT user, email, about FROM users WHERE user = ?");
+    $sth->execute($user) or die $sth->errstr;
+    my $res = $sth->fetchrow_hashref();
+    my $db_user = $res->{user};
+    if ($db_user) {
+## fill values below with values from database for the user... TODO
+	template 'userpages.tt' => { 
+		'err' => $err,
+    'navigation' => $temp,
+    'user' => $db_user,
+    'email' => $res->{email},
+    'about_text' => $res->{about} || "insert your above text here ... " # possibily use a hashref to all values in hash... and use them in userpages.tt template.
+    }, 
+    {
+    layout => "new_main"
+    };
+    } else {
+        set_flash("User does not exist!");
+        redirect '/Blog';
+    }
 };
 ## }}}
 

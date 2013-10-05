@@ -1,9 +1,10 @@
 ############
 ### high ###
 ############
-add table entry for email adress -> then we can store user email when user is created ...
-
+add table entry for email adress -> then we can store user email when user is created (null is possible.)
 verify if  existing user cannot be re-added for that: user add/password modify possibility => send email with perl to my email adress for request (+captcha usage) - additionally insert email addresses into auth table users maybe?/maybe use roles for more security
+
+show all users who are online
 
 use ssl / https for page with lighttpd 
 split up initialize db and webapp parts?
@@ -19,7 +20,6 @@ use one db with 3 tables (tables: auth, comments, entries)
 ### low ###
 ###########
 cleanup code in general
-user pages?
 show login status on all pages maybe? not only on blog site?
 smiley copyright?
 more perl tests

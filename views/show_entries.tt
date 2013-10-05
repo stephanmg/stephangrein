@@ -55,7 +55,7 @@
 <% IF not session.user %>
       <a href="<% login_url %>">log in</a> / <a href="<% useradd_url %>">register</a> <%msg %>
     <% ELSE %>
-      <a href="<% logout_url %>">log out (<%session.user%>)</a> <%msg %>
+      <a href="<% logout_url %>">log out (<%session.user%>)</a> <% msg %> (go to your <a href="/Blog/users/<%session.user%>">user page</a>)
   <% END %>
             </div> <!-- /content-in -->
                
