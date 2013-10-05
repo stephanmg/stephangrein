@@ -581,7 +581,7 @@ my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
 		'err' => $err,
     'navigation' => $temp,
     'user' => $db_user,
-    'email' => $res->{email},
+    'email' => $res->{email} || "no email assigned",
     'about_text' => $res->{about} || "insert your above text here ... " # possibily use a hashref to all values in hash... and use them in userpages.tt template.
     }, 
     {
