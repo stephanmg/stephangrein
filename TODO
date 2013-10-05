@@ -5,21 +5,21 @@ add table entry for email adress -> then we can store user email when user is cr
 verify if  existing user cannot be re-added for that: user add/password modify possibility => send email with perl to my email adress for request (+captcha usage) - additionally insert email addresses into auth table users maybe?/maybe use roles for more security
 
 show all users who are online
+formular for userpage edit necessary (POST request needs to be handled)
 
-use ssl / https for page with lighttpd 
 split up initialize db and webapp parts?
-cleanup directory (databases and schemata)
+cleanup directory (databases and schemata to be consistent)
+use ssl / https for page with lighttpd 
 
 ##############
 ### middle ###
 ##############
-show only 50 entries, and then make links to access more items.
+more perl tests
 use one db with 3 tables (tables: auth, comments, entries) 
 
 ###########
 ### low ###
 ###########
+show only 50 entries, and then make links to access more items.
 cleanup code in general
-show login status on all pages maybe? not only on blog site?
-smiley copyright?
-more perl tests
+smiley copyright issues

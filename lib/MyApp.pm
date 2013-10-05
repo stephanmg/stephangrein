@@ -470,7 +470,7 @@ my $err;
     $sth->execute(params->{username});
     my $res = $sth->fetchrow_hashref();
     if ($res) {
-    # TODO: send email with new password either to user supplied email adress or if email stored in database in future select email adress of that particular user
+    # TODO send email with new password either to user supplied email adress or if email stored in database in future select email adress of that particular user
         my $randompass = random_pass(6);
         sendmail(params->{mail}, $randompass, params->{username});
         set_flash("Send email to: " . params->{mail} . " with login details.");
@@ -582,7 +582,7 @@ my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
     'navigation' => $temp,
     'user' => $db_user,
     'email' => $res->{email} || "no email assigned",
-    'about_text' => $res->{about} || "insert your above text here ... " # possibily use a hashref to all values in hash... and use them in userpages.tt template.
+    'about_text' => $res->{about} || "insert your above text here ... " # TODO possibily use a hashref to all values in hash... and use them in userpages.tt template.
     }, 
     {
     layout => "new_main"
