@@ -7,7 +7,6 @@ perl:
 before_install:
    - sudo apt-get update
    - sudo apt-get install libgd-gd2-noxpm-perl
-   - sudo apt-get install libgd2-noxpm-dev
 
 install:
    - cpanm -q -n Template

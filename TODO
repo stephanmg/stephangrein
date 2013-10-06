@@ -24,3 +24,4 @@ show only 50 entries, and then make links to access more items.
 user communication? (send message to users?, that is use a new table 'mailbox' message_from_user as foreign key, text, message_to_user from 'auth' as foreign key, and select all comments in mailbox of the current user 'my_user' from the mailbox table with the foreign key then)->add page which lists all availale users, too
 cleanup code in general
 smiley copyright issues
+build script for perl dependencies
