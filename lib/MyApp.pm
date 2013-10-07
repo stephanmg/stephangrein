@@ -606,7 +606,8 @@ my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
     'navigation' => $temp,
     'user' => $db_user,
     'email' => $res->{email} || "no email assigned",
-    'about_text' => $pretext || "insert your above text here ... " # TODO possibily use a hashref to all values in hash... and use them in userpages.tt template.
+    'about_text' => $pretext || "insert your above text here ... ", # TODO possibily use a hashref to all values in hash... and use them in userpages.tt template.
+    'emoticons' => \%EMOTICONS
     }, 
     {
     layout => "new_main"

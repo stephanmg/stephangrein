@@ -19,13 +19,20 @@
 <h2><%user %>s user page</h2>
 <% IF err %><p class=error><strong>Error:</strong> <% err %><% END %>
 <% IF session.user == user %>
+ <% IF emoticons %>
+  <div id="emoticons">
+  <% FOREACH key in emoticons.keys %>
+    <a href="#" id="<%key%>" title="<%key%>" onclick="Emoticons('<%key%>')"><% emoticons.$key%></a><br />
+  <%END%>
+  </div>
+  <% END%>  
 <form action="<% userpages_url%>/<% user %>" method=post>
   <dl>
     <dt>Username: <%user %>
     <dt>Email:
     <dd><input type=text name=mail value=<%email%>>
     <dt>About:
-    <textarea name=about_text cols="50" rows="20"> <%about_text%> </textarea>
+    <textarea id=emoticons_form name=about_text cols="50" rows="20"> <%about_text%> </textarea>
     <dd><input type=submit value=Edit>
   </dl>
 </form>
