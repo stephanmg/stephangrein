@@ -25,7 +25,7 @@
     <dt>Email:
     <dd><input type=text name=mail value=<%email%>>
     <dt>About:
-    <textarea name="About" cols="50" rows="20"> <%about_text%> </textarea>
+    <textarea name=about_text cols="50" rows="20"> <%about_text%> </textarea>
     <dd><input type=submit value=Edit>
   </dl>
 </form>

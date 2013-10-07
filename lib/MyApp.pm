@@ -98,6 +98,7 @@ sub unemoticonize {
         $text =~ s!$val!$key!g;
     }
     
+    $text =~s/\\//g;
     return $text;   
 }
 ## }}}
@@ -453,7 +454,7 @@ post '/Blog/add' => sub {
 set_flash('New entry posted!');
 	redirect '/Blog';
 };
-### }}}
+#a## }}}
 
 ## {{{ '/Blog/recover_password'
 any ['get', 'post'] => '/Blog/recover_password' => sub {
@@ -564,6 +565,18 @@ any ['get', 'post'] => '/Blog/users/*' => sub {
 # edit_comment -> insert into table new/old values... TODO
 my $err;
 my ($user) = splat;
+    if ( request->method() eq "POST" ) {
+        if (session('user') eq $user) {
+    my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
+	    	die $DBI::errstr;
+	 my $sth = $dbh->prepare('update users set about=?, email=? WHERE user = ?');
+        my $pretext = params->{about_text};
+        $pretext = emoticonize($pretext, \%EMOTICONS);
+
+    $sth->execute($pretext, params->{mail}, $user) or die $sth->errstr;
+        redirect '/Blog/users/' . $user;
+        }
+    }
 my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
 		die $DBI::errstr;
 
@@ -576,13 +589,24 @@ my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
     my $res = $sth->fetchrow_hashref();
     my $db_user = $res->{user};
     if ($db_user) {
+
+       my $pretext = $res->{about};
+        my $user = session('user');
+        if ($user) {
+         if ($db_user eq session('user')) {
+        $pretext = unemoticonize($pretext, \%EMOTICONS);
+        } else {
+            # show smileys for other users in about text ...
+        }
+    }
+
 ## fill values below with values from database for the user... TODO
 	template 'userpages.tt' => { 
 		'err' => $err,
     'navigation' => $temp,
     'user' => $db_user,
     'email' => $res->{email} || "no email assigned",
-    'about_text' => $res->{about} || "insert your above text here ... " # TODO possibily use a hashref to all values in hash... and use them in userpages.tt template.
+    'about_text' => $pretext || "insert your above text here ... " # TODO possibily use a hashref to all values in hash... and use them in userpages.tt template.
     }, 
     {
     layout => "new_main"
