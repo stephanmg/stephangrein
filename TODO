@@ -1,21 +1,21 @@
 ############
 ### high ###
 ############
-add datum to comments / edit comments posts (therefore date string in table comments necessary and update the add_comment/edit_comment form to insert also a date in the table!!!) -> update last update comment 
+cleanup directory (databases and schemata to be consistently named, and structure of directory of webapp to be restructured) -> use auth db (users) and test db (comments, entries)
+split up initialize db and webapp parts? for security reasons (already done, only needs to be more fancy).
+implement startup.pl which firstly calls init_db.pl (inits auth db if it does not exist) and then calls ./bin/app.pl afterwards ...
 
-cleanup directory (databases and schemata to be consistent) (probably same as in the section middle of todo priority below)
-cleanup code in general
+add datum to comments / edit comments posts (therefore date string in table comments necessary and update the add_comment/edit_comment form to insert also a date in the table!!!) -> update last update comment 
 
 layout improvements of webpage in general
 imrove crosslinkining within the webpage too! (i. e. useradd, users who are available, login/logout, etc...)
+cleanup code in general
 
 ##############
 ### middle ###
 ##############
 more perl tests to be added
-use one db with 3 tables (tables: auth, comments, entries) 
-split up initialize db and webapp parts? for security reasons
-show only 50 entries, and then make links to access more items of blog.
+show only 50 entries, and then make links to access more items of blog. / maybe implement the possibility to sort different the entries. lets say /Blog/entry_order/date and /Blog/entry_order/date_rev -> also we have /Blog/entry_order/50 or /Blog/entry_order/100
 
 ###########
 ### low ###
