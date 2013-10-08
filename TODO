@@ -1,19 +1,21 @@
 ############
 ### high ###
 ############
-use javascript insert for about text in userpages/throughout the page.
+add date to comments / edit comments posts (therefore date string in table comments necessary and update the add_comment/edit_comment form to insert also a date in the table!!!)
+navigation string replacement in other cases then in  navigation bar to be handled. => i. e. if its useradd or users then we need to highlight blog (currently we then highlight nothing at all because the string does not match to any in the navigation string)
+
+cleanup directory (databases and schemata to be consistent) (probably same as in the section middle of todo priority below)
+cleanup code in general
+
 layout improvements of webpage in general
 imrove crosslinkining within the webpage too! (i. e. useradd, users who are available, login/logout, etc...)
-
-cleanup directory (databases and schemata to be consistent)
-cleanup code in general => navigation string replacement in other cases then in  navigation bar to be handled.
 
 ##############
 ### middle ###
 ##############
+more perl tests to be added
 use one db with 3 tables (tables: auth, comments, entries) 
 split up initialize db and webapp parts? for security reasons
-more perl tests to be added
 show only 50 entries, and then make links to access more items of blog.
 
 ###########

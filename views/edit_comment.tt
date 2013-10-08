@@ -18,12 +18,20 @@
             <div id="content-in">
 <h2>Edit comment:</h2>
 <% IF err %><p class=error><strong>Error:</strong> <% err %><% END %>
+ <% IF emoticons %>
+  <div id="emoticons">
+  <% FOREACH key in emoticons.keys %>
+    <a href="#" id="<%key%>" title="<%key%>" onclick="Emoticons('<%key%>')"><% emoticons.$key%></a><br />
+  <%END%>
+  </div>
+  <% END%>  
+
 <form action="<% edit_comment_url%>/<%entry_id%>" method=post>
   <dl>
      <dt>Titel: 
     <dd><input type=text name=titel>
       <dt>Text:
-      <dd><textarea name=text rows=5 cols=40><% old_text %></textarea>
+      <dd><textarea name=text rows=5 cols=40 id=emoticons_form><% old_text %></textarea>
       <dd><input type=submit value=Share>
 </dl>
 </form>

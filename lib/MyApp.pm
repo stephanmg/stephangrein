@@ -271,7 +271,8 @@ any ['get', 'post'] => '/Blog/edit_comment/*' => sub {
         template 'edit_comment.tt' => {
             edit_comment_url => uri_for('/Blog/edit_comment'),
             entry_id => $id,
-            old_text => $pretext
+            old_text => $pretext,
+            emoticons => \%EMOTICONS
         };
     } else {
         my $dbh = connect_db();
@@ -313,7 +314,8 @@ any ['post', 'get'] => '/Blog/comment/*' => sub {
    	if ( request->method() eq "GET" ) {
         template 'comment.tt' => {
             comment_url => uri_for('/Blog/comment'),
-            entry_id => $id
+            entry_id => $id,
+            emoticons => \%EMOTICONS
         };
     } else {
         my $dbh = connect_db();
@@ -410,7 +412,8 @@ any ['get', 'post'] => '/Blog/edit/*' => sub {
         template 'edit.tt' => {
             edit_url => uri_for('/Blog/edit'),
             entry_id => $id,
-            old_text => $pretext
+            old_text => $pretext,
+            emoticons => \%EMOTICONS
         };
     } else {
         my $dbh = connect_db();
