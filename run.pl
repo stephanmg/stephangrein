@@ -24,7 +24,7 @@ use utf8;
 
 use Cwd;
 use constant 'WEBAPP' => cwd() . '/bin/app.pl';
-use constant 'INITAPP' => cwd() . '/lib/init_db.pl';
+use constant 'INITAPP' => cwd() . '/lib/init_auth.pl';
 use IPC::System::Simple qw(system capture);
 
 system($^X, INITAPP);
