@@ -267,13 +267,23 @@ any ['get', 'post'] => '/Blog/edit_comment/*' => sub {
         $sth->execute($id);
 		    my $pretext = ($sth->fetchrow_hashref)->{'text'};
         $pretext = unemoticonize($pretext, \%EMOTICONS);
+
+        $sql = 'select datum from authors where id = ?';
+        $sth = $dbh->prepare($sql) or die $dbh->errstr;
+        $sth->execute($id);
+
+        my $datum = ($sth->fetchrow_hashref)->{'datum'};
         
         template 'edit_comment.tt' => {
             edit_comment_url => uri_for('/Blog/edit_comment'),
             entry_id => $id,
             old_text => $pretext,
-            emoticons => \%EMOTICONS
-        };
+            emoticons => \%EMOTICONS,
+            datum => $datum
+        },
+    {
+    layout => "new_main"
+    };
     } else {
         my $dbh = connect_db();
         my $sql = 'select author from comments where id = ?';
@@ -681,7 +691,8 @@ any ['get', 'post'] => '/Blog/login' => sub {
 		'err' => $err,
     'navigation' => $temp,
     'captcha_mime' => $captcha_mime,
-    'captcha_data' => $captcha_data
+    'captcha_data' => $captcha_data,
+    'name_of_page' => "Login"
     }, 
     {
     layout => "new_main"

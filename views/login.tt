@@ -1,4 +1,4 @@
-  <h2 id="content-title">Lorem ipsum dolor sit amet: we are here <% name_of_page %></h2>
+  <h2 id="content-title">Lorem ipsum dolor sit amet: <% name_of_page %></h2>
             
 
             <!-- Perex -->
