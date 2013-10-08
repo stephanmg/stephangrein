@@ -1,8 +1,7 @@
 ############
 ### high ###
 ############
-add datum and last_update to comments / edit comments posts (therefore date string in table comments necessary and update the add_comment/edit_comment form to insert also a date in the table!!!) -> update last update comment 
-add last_update for entry
+add datum to comments / edit comments posts (therefore date string in table comments necessary and update the add_comment/edit_comment form to insert also a date in the table!!!) -> update last update comment 
 
 cleanup directory (databases and schemata to be consistent) (probably same as in the section middle of todo priority below)
 cleanup code in general
