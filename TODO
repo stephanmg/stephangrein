@@ -6,7 +6,7 @@ layout improvements of webpage in general
 imrove crosslinkining within the webpage too! (i. e. useradd, users who are available, login/logout, etc...)
 
 cleanup directory (databases and schemata to be consistent)
-cleanup code in general
+cleanup code in general => navigation string replacement in other cases then in  navigation bar to be handled.
 
 ##############
 ### middle ###

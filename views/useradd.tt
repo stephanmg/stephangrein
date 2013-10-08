@@ -18,6 +18,13 @@
             <div id="content-in">
 <h2>Request new user account</h2>
 <% IF err %><p class=error><strong>Error:</strong> <% err %><% END %>
+<% IF emoticons %>
+  <div id="emoticons">
+  <% FOREACH key in emoticons.keys %>
+    <a href="#" id="<%key%>" title="<%key%>" onclick="Emoticons('<%key%>')"><% emoticons.$key%></a><br />
+  <%END%>
+  </div>
+  <% END%>  
 <form action="<% useradd_url %>" method=post>
   <dl>
     <dt>Username:
@@ -25,7 +32,7 @@
     <dt>Email:
     <dd><input type=text name=mail>
     <dt>About:
-    <dd><input type=text name=about>
+    <dd><input type=text name=about id=emoticons_form>
     <dt>Capture (see below):
     <dd><input type=text name=captcha_str2>
     <dd><input type=submit value=Request>

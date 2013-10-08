@@ -531,8 +531,10 @@ any ['get', 'post'] => '/Blog/useradd' => sub {
 	 my $sql = 'insert into users (user, pass, email, about) values (?, ?, ?, ?)';
 	 $sth = $dbh->prepare($sql) or die $dbh->errstr;
  my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
- $csh->add($randompass);
-	$sth->execute(params->{username}, $csh->generate, params->{mail}, params->{about}) or die $sth->errstr;
+ $csh->add($randompass);  
+my $pretext = params->{about};
+     $pretext = emoticonize($pretext, \%EMOTICONS);
+	$sth->execute(params->{username}, $csh->generate, params->{mail}, $pretext) or die $sth->errstr;
         redirect '/Blog';
     }
     }
@@ -550,7 +552,8 @@ generate_capture();
 		'err' => $err,
     'navigation' => $temp,
     'captcha_mime' => $captcha_mime,
-    'captcha_data' => $captcha_data
+    'captcha_data' => $captcha_data,
+    'emoticons' => \%EMOTICONS
     }, 
     {
     layout => "new_main"
