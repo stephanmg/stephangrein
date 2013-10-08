@@ -38,9 +38,9 @@
  <% END %>
 <ul class=entries>
 <% IF entries.size %>
-  <% FOREACH id IN entries.keys.nsort %>
+  <% FOREACH id IN entries.keys.sort.reverse %>
     <li><h3><% entries.$id.title %> (from/last update: <% entries.$id.datum %>)</h3><% entries.$id.text %><br/>Author: <% entries.$id.author %><%IF session.user %>. Actions: <a href="<%edit_url%>/<%entries.$id.id%>">Edit</a> / <a href="<%delete_url%>/<%entries.$id.id%>">Delete</a> / <a href="<%comment_url%>/<%entries.$id.id%>">Comment</a> <%END%> <h4> Comments </h4><dl>
-  <% FOREACH id2 in comments.keys.nsort %>
+  <% FOREACH id2 in comments.keys.sort.reverse %>
   <% IF id == comments.$id2.article_id %>
     <dd> <b><%comments.$id2.title%></b><br /><%comments.$id2.text%> from: <%comments.$id2.author%><%IF session.user %>. Actions: <a href="<%edit_comment_url%>/<%comments.$id2.id%>">Edit</a> / <a href="<%delete_comment_url%>/<%comments.$id2.id%>">Delete</a> <%END %>
   <% END %>
