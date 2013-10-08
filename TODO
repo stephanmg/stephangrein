@@ -1,15 +1,11 @@
 ############
 ### high ###
 ############
-cleanup directory (databases and schemata to be consistently named, and structure of directory of webapp to be restructured) -> use auth db (users) and test db (comments, entries)
-split up initialize db and webapp parts? for security reasons (already done, only needs to be more fancy).
-implement startup.pl which firstly calls init_db.pl (inits auth db if it does not exist) and then calls ./bin/app.pl afterwards ...
-
 add datum to comments / edit comments posts (therefore date string in table comments necessary and update the add_comment/edit_comment form to insert also a date in the table!!!) -> update last update comment 
 
 layout improvements of webpage in general
 imrove crosslinkining within the webpage too! (i. e. useradd, users who are available, login/logout, etc...)
-cleanup code in general
+(cleanup code in general)
 
 ##############
 ### middle ###

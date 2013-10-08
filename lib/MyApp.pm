@@ -47,7 +47,8 @@ our @EXPORT = qw($EMOTICONS_DIR %EMOTICONS emoticonize unemoticonize);
 our $VERSION = '0.1';
 set layout => 'new_main';
 set 'session' => 'Simple';
-set 'database' => './lib/test.db';
+set 'database' => './lib/database.db';
+set 'db_users' => './lib/auth.db';
 set 'username' => 'admin';
 set 'password' => 'password';
 set 'template' => 'template_toolkit';
@@ -147,9 +148,9 @@ sub connect_db {
 
 sub init_db {
 	my $db = connect_db();
-	my $schema = read_file('./lib/schema.sql');
+	my $schema = read_file('./lib/schema_entry.sql');
 	$db->do($schema) or die $db->errstr;
-  $schema = read_file('./lib/schema2.sql');
+  $schema = read_file('./lib/schema_comments.sql');
 	$db->do($schema) or die $db->errstr;
 }
 
@@ -472,7 +473,7 @@ set_flash('New entry posted!');
 ## {{{ '/Blog/recover_password'
 any ['get', 'post'] => '/Blog/recover_password' => sub {
 my $err;
-	my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
+	my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('db_users')) or
 		die $DBI::errstr;
 	if ( request->method() eq "POST" ) {
     my $captcha_str2 = params->{captcha_str2};
@@ -529,7 +530,7 @@ any ['get', 'post'] => '/Blog/useradd' => sub {
         redirect '/Blog';
         set_flash("Captcha empty or wrong!!!!!.");
     } else {
-   my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
+   my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('db_users')) or
 		    die $DBI::errstr;
     my $sth = $dbh->prepare("SELECT user FROM users WHERE user = ?");
     $sth->execute(params->{username});
@@ -583,7 +584,7 @@ my $err;
 my ($user) = splat;
     if ( request->method() eq "POST" ) {
         if (session('user') eq $user) {
-    my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
+    my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('db_users')) or
 	    	die $DBI::errstr;
 	 my $sth = $dbh->prepare('update users set about=?, email=? WHERE user = ?');
         my $pretext = params->{about_text};
@@ -593,7 +594,7 @@ my ($user) = splat;
         redirect '/Blog/users/' . $user;
         }
     }
-my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
+my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('db_users')) or
 		die $DBI::errstr;
 
    my $temp = NAVIGATION;
@@ -638,7 +639,7 @@ my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
 ## {{{ '/Blog/login' 
 any ['get', 'post'] => '/Blog/login' => sub {
 	my $err;
-	my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
+	my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('db_users')) or
 		die $DBI::errstr;
 	if ( request->method() eq "POST" ) {
 

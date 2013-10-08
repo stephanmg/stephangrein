@@ -22,9 +22,9 @@ use DBI;
 use File::Slurp;
 use Crypt::SaltedHash;
 
-	my $dbh = DBI->connect("dbi:SQLite:dbname=./auth.sql") or
+	my $dbh = DBI->connect("dbi:SQLite:dbname=./lib//auth.db") or
 		die $DBI::errstr;
-	my $schema = read_file('./schema.sql');
+	my $schema = read_file('./lib/auth.sql');
 	$dbh->do($schema) or die $db->errstr;
 
 	my $sql = 'insert into users (user, pass) values (?, ?)';
