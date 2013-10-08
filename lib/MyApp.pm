@@ -492,7 +492,7 @@ my $err;
 }
 
    my $temp = NAVIGATION;
-   $temp =~ s!<li>(<a href="/Blog/login">.*?</li>)!<li id="nav-active">$1!;
+   $temp =~ s!<li>(<a href="/Blog">.*?</li>)!<li id="nav-active">$1!;
 
 generate_capture();
     my $captcha_data = session('captcha_data'); 
@@ -549,7 +549,7 @@ generate_capture();
 
 
    my $temp = NAVIGATION;
-   $temp =~ s!<li>(<a href="/Blog/login">.*?</li>)!<li id="nav-active">$1!;
+   $temp =~ s!<li>(<a href="/Blog">.*?</li>)!<li id="nav-active">$1!;
 
 	template 'useradd.tt' => { 
 		'err' => $err,
@@ -670,7 +670,7 @@ any ['get', 'post'] => '/Blog/login' => sub {
 }
 
    my $temp = NAVIGATION;
-   $temp =~ s!<li>(<a href="/Blog/login">.*?</li>)!<li id="nav-active">$1!;
+   $temp =~ s!<li>(<a href="/Blog">.*?</li>)!<li id="nav-active">$1!;
     
     generate_capture();
     my $captcha_data = session('captcha_data'); 

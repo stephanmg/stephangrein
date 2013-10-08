@@ -2,7 +2,6 @@
 ### high ###
 ############
 add date to comments / edit comments posts (therefore date string in table comments necessary and update the add_comment/edit_comment form to insert also a date in the table!!!)
-navigation string replacement in other cases then in  navigation bar to be handled. => i. e. if its useradd or users then we need to highlight blog (currently we then highlight nothing at all because the string does not match to any in the navigation string)
 
 cleanup directory (databases and schemata to be consistent) (probably same as in the section middle of todo priority below)
 cleanup code in general
