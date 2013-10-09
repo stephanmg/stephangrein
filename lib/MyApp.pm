@@ -140,6 +140,7 @@ sub get_flash {
 
 ## {{{ database handling 
 sub connect_db {
+# TODO use argument here for handling and use it below for other cases
 	my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('database')) or
 		die $DBI::errstr;
 

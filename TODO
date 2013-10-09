@@ -1,6 +1,7 @@
 ############
 ### high ###
 ############
+rewrite connect_db to accept argument for different database ....
 add datum to comments / edit comments posts (therefore date string in table comments necessary and update the add_comment/edit_comment form to insert also a date in the table!!!) -> update last update comment 
 
 layout improvements of webpage in general
