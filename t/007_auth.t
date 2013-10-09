@@ -20,5 +20,4 @@ use warnings;
 
 use Test::More tests => 1;                      # last test to print
 
-
-
+ok(init_auth(), "Initializing auth (auth.db) failed");

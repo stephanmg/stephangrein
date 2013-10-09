@@ -20,5 +20,7 @@ use warnings;
 
 use Test::More tests => 1;                      # last test to print
 
+use MyInit;
+use Dancer::Test;
 
-
+ok(init_db(), "Initializing database (database.db)  failed");
