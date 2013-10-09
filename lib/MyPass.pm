@@ -24,6 +24,8 @@ use Exporter;
 our @ISA= qw( Exporter );
 our @EXPORT = qw( %mail );
 #
-our %mail = (
-        user => 'grein@informatik.uni-frankfurt.de',
-        password => '');
+our %mail = 
+(
+   user => 'grein@informatik.uni-frankfurt.de',
+   password => ''
+);

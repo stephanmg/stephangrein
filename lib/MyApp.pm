@@ -146,14 +146,6 @@ sub connect_db {
 	return $dbh;
 }
 
-sub init_db {
-	my $db = connect_db();
-	my $schema = read_file('./lib/schema_entry.sql');
-	$db->do($schema) or die $db->errstr;
-  $schema = read_file('./lib/schema_comments.sql');
-	$db->do($schema) or die $db->errstr;
-}
-
 ## }}}
 
 ## {{{ hooks 
@@ -821,6 +813,5 @@ sub sendmail {
 # }}}
 
 # initializer {{{
-init_db();
 true;
 # }}}
