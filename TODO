@@ -1,17 +1,18 @@
 ############
 ### high ###
 ############
-layout improvements of webpage in general
-imrove crosslinkining within the webpage too! (i. e. useradd, users who are available, login/logout, etc...)
-cleanup code even more and directories
+imrove crosslinkining within the webpage (one point: show  users who are available ... list them (under Users on the userpages.tt template => i. e. only if logged in!!))
+
+more perl tests to be added
+show only 50 entries, and then make links to access more items of blog. / maybe implement the possibility to sort different the entries. lets say /Blog/entry_order/date and /Blog/entry_order/date_rev -> also we have /Blog/entry_order/50 or /Blog/entry_order/100
 
 add datum to comments / edit comments posts (therefore date string in table comments necessary and update the add_comment/edit_comment form to insert also a date in the table!!!) -> update last update comment 
 
 ##############
 ### middle ###
 ##############
-more perl tests to be added
-show only 50 entries, and then make links to access more items of blog. / maybe implement the possibility to sort different the entries. lets say /Blog/entry_order/date and /Blog/entry_order/date_rev -> also we have /Blog/entry_order/50 or /Blog/entry_order/100
+cleanup code even more and directories
+layout improvements of webpage in general
 
 ###########
 ### low ###
