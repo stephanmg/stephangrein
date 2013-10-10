@@ -24,7 +24,7 @@ use MyApp 'connect_db';
 use Dancer::Test;
 
 use constant DATABASE => './lib/database.db';
-use constant AUTH => '/.lib/auth.db';
+use constant AUTH => './lib/auth.db';
 
 ok(connect_db(DATABASE), "Could not connect to database db");
 ok(connect_db(AUTH), "Could not connect to auth db.");
