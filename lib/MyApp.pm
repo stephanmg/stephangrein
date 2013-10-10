@@ -45,7 +45,7 @@ our @EXPORT = qw($EMOTICONS_DIR %EMOTICONS emoticonize unemoticonize);
 
 ## {{{ settings 
 our $VERSION = '0.1';
-set layout => 'new_main';
+set 'layout' => 'new_main';
 set 'session' => 'Simple';
 set 'database' => './lib/database.db';
 set 'db_users' => './lib/auth.db';
@@ -53,11 +53,15 @@ set 'username' => 'admin';
 set 'password' => 'password';
 set 'template' => 'template_toolkit';
 set 'emoticons' => '/lib/emoticons';
-#set 'logger' => 'console';
-#set 'log' => 'debug';
-#set 'show_errors' => 1;
-#set 'access_log' => 1;
-#set 'warnings' => 1;
+set 'logger' => 'console'; # log
+set 'log' => 'core';
+set 'show_errors' => 1;
+set 'warnings' => 1;
+set 'port' => 8080;
+set 'startup_info' => 1;
+set 'environment' => 'development'; # production
+set 'traces' => 1;
+set 'server_tokens' => 0;
 ## }}}
 
 ## {{{ additional variables 
@@ -140,11 +144,15 @@ sub get_flash {
 
 ## {{{ database handling 
 sub connect_db {
-# TODO use argument here for handling and use it below for other cases
-	my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('database')) or
-		die $DBI::errstr;
+    my $db = shift;
+    my $dbh;
 
-	return $dbh;
+    if (!$db) {
+        die("No database name given: $!");
+    } else {
+        my $dbh = DBI->connect("dbi:SQLite:dbname=$db") or die $DBI::errstr;
+    }
+    return $dbh;
 }
 
 ## }}}
@@ -163,7 +171,7 @@ hook 'before_template_render' => sub {
 ## {{{ routes 
 ## {{{ '/Blog' 
 get '/Blog' => sub {
-	my $db = connect_db();
+	my $db = connect_db(setting('database'));
 	my $sql = 'select id, title, text, author, datum from entries order by id desc';
 	my $sth = $db->prepare($sql) or die $db->errstr;
 	$sth->execute or die $sth->errstr;
@@ -205,7 +213,7 @@ any ['post', 'get'] => '/Blog/delete_comment/*' => sub {
     }   
 
     	if ( request->method() eq "GET" ) {
-        my $dbh = connect_db();
+        my $dbh = connect_db(setting('database'));
         my $sql = 'select author, title, text from comments where id = ?';
         my $sth = $dbh->prepare($sql) or die $dbh->errstr;
         $sth->execute($id);
@@ -224,7 +232,7 @@ any ['post', 'get'] => '/Blog/delete_comment/*' => sub {
             entry_text => $text
         };
     } else {
-        my $dbh = connect_db();
+        my $dbh = connect_db(setting('database'));
         my $sql = 'select author, article_id from comments where id = ?';
         my $sth = $dbh->prepare($sql) or die $dbh->errstr;
         $sth->execute($id);
@@ -254,7 +262,7 @@ any ['get', 'post'] => '/Blog/edit_comment/*' => sub {
     }   
 
     	if ( request->method() eq "GET" ) {
-        my $dbh = connect_db();
+        my $dbh = connect_db(setting('database'));
         my $sql = 'select text from comments where id = ?';
         my $sth = $dbh->prepare($sql) or die $dbh->errstr;
 
@@ -279,7 +287,7 @@ any ['get', 'post'] => '/Blog/edit_comment/*' => sub {
     layout => "new_main"
     };
     } else {
-        my $dbh = connect_db();
+        my $dbh = connect_db(setting('database'));
         my $sql = 'select author from comments where id = ?';
         my $sth = $dbh->prepare($sql) or die $dbh->errstr;
         $sth->execute($id);
@@ -322,7 +330,7 @@ any ['post', 'get'] => '/Blog/comment/*' => sub {
             emoticons => \%EMOTICONS
         };
     } else {
-        my $dbh = connect_db();
+        my $dbh = connect_db(setting('database'));
         my $sql = 'insert into comments (title, text, author, article_id) values (?, ?, ?, ?)';
         my $sth = $dbh->prepare($sql) or die $dbh->errstr;
         
@@ -354,7 +362,7 @@ any ['post', 'get'] => '/Blog/delete/*' => sub {
     }   
 
     	if ( request->method() eq "GET" ) {
-        my $dbh = connect_db();
+        my $dbh = connect_db(setting('database'));
         my $sql = 'select author, title, text from entries where id = ?';
         my $sth = $dbh->prepare($sql) or die $dbh->errstr;
         $sth->execute($id);
@@ -373,7 +381,7 @@ any ['post', 'get'] => '/Blog/delete/*' => sub {
             entry_text => $text
         };
     } else {
-        my $dbh = connect_db();
+        my $dbh = connect_db(setting('database'));
         my $sql = 'select author from entries where id = ?';
         my $sth = $dbh->prepare($sql) or die $dbh->errstr;
         $sth->execute($id);
@@ -405,7 +413,7 @@ any ['get', 'post'] => '/Blog/edit/*' => sub {
     }   
 
     	if ( request->method() eq "GET" ) {
-        my $dbh = connect_db();
+        my $dbh = connect_db(setting('database'));
         my $sql = 'select text from entries where id = ?';
         my $sth = $dbh->prepare($sql) or die $dbh->errstr;
 
@@ -420,7 +428,7 @@ any ['get', 'post'] => '/Blog/edit/*' => sub {
             emoticons => \%EMOTICONS
         };
     } else {
-        my $dbh = connect_db();
+        my $dbh = connect_db(setting('database'));
         my $sql = 'update entries set text=? where id = ?';
         my $sth = $dbh->prepare($sql) or die $dbh->errstr;
 
@@ -448,7 +456,7 @@ post '/Blog/add' => sub {
 		send_error("Not logged in", 401);
 	}
 
-	my $db = connect_db();
+	my $db = connect_db(setting('database'));
 	my $sql = 'insert into entries (title, text, author, datum) values (?, ?, ?, ?)';
 	my $sth = $db->prepare($sql) or die $db->errstr;
   my $now = localtime;
@@ -466,8 +474,7 @@ set_flash('New entry posted!');
 ## {{{ '/Blog/recover_password'
 any ['get', 'post'] => '/Blog/recover_password' => sub {
 my $err;
-	my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('db_users')) or
-		die $DBI::errstr;
+	my $dbh = connect_db(setting('db_users'));
 	if ( request->method() eq "POST" ) {
     my $captcha_str2 = params->{captcha_str2};
     if (!$captcha_str2 || $captcha_str2 ne session('captcha_str')) {
@@ -523,8 +530,8 @@ any ['get', 'post'] => '/Blog/useradd' => sub {
         redirect '/Blog';
         set_flash("Captcha empty or wrong!!!!!.");
     } else {
-   my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('db_users')) or
-		    die $DBI::errstr;
+
+	my $dbh = connect_db(setting('db_users'));
     my $sth = $dbh->prepare("SELECT user FROM users WHERE user = ?");
     $sth->execute(params->{username});
     my $res = $sth->fetchrow_hashref();
@@ -577,8 +584,7 @@ my $err;
 my ($user) = splat;
     if ( request->method() eq "POST" ) {
         if (session('user') eq $user) {
-    my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('db_users')) or
-	    	die $DBI::errstr;
+	my $dbh = connect_db(setting('db_users'));
 	 my $sth = $dbh->prepare('update users set about=?, email=? WHERE user = ?');
         my $pretext = params->{about_text};
         $pretext = emoticonize($pretext, \%EMOTICONS);
@@ -587,8 +593,7 @@ my ($user) = splat;
         redirect '/Blog/users/' . $user;
         }
     }
-my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('db_users')) or
-		die $DBI::errstr;
+	my $dbh = connect_db(setting('db_users'));
 
    my $temp = NAVIGATION;
    $temp =~ s!<li>(<a href="/Blog/login">.*?</li>)!<li id="nav-active">$1!;
@@ -632,8 +637,7 @@ my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('db_users')) or
 ## {{{ '/Blog/login' 
 any ['get', 'post'] => '/Blog/login' => sub {
 	my $err;
-	my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('db_users')) or
-		die $DBI::errstr;
+	my $dbh = connect_db(setting('db_users'));
 	if ( request->method() eq "POST" ) {
 
     my $captcha_str2 = params->{captcha_str2};
