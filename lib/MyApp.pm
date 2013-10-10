@@ -151,7 +151,7 @@ sub connect_db {
     if (!$db) {
         die("No database name given: $!");
     } else {
-        my $dbh = DBI->connect("dbi:SQLite:dbname=$db") or die $DBI::errstr;
+        $dbh = DBI->connect("dbi:SQLite:dbname=".$db) or die $DBI::errstr;
     }
     return $dbh;
 }
@@ -174,6 +174,7 @@ hook 'before_template_render' => sub {
 ## {{{ routes 
 ## {{{ '/Blog' 
 get '/Blog' => sub {
+
 	my $db = connect_db(setting('database'));
 	my $sql = 'select id, title, text, author, datum from entries order by id desc';
 	my $sth = $db->prepare($sql) or die $db->errstr;
