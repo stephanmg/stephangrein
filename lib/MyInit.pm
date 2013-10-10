@@ -69,4 +69,3 @@ sub init_db {
 	$db->do($schema) or die $db->errstr;
 }
 # }}}
-1;

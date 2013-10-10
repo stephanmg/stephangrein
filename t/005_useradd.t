@@ -18,8 +18,10 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;                      # last test to print
+use Test::More tests => 2;                      # last test to print
 
 my $dummy = 1;
 
 ok($dummy eq $dummy, "Dummy not dummy. Something strange happened.");
+
+ok(! ($dummy ne $dummy), "Dummy not dummy. Something strange happened.");

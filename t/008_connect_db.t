@@ -23,5 +23,8 @@ use Test::More tests => 2;                      # last test to print
 use MyApp 'connect_db';
 use Dancer::Test;
 
-ok(connect_db(setting('database')), "Could not connect to database db");
-ok(connect_db(setting('auth')), "Could not connect to auth db.");
+use constant DATABASE => './lib/database.db';
+use constant AUTH => '/.lib/auth.db';
+
+ok(connect_db(DATABASE), "Could not connect to database db");
+ok(connect_db(AUTH), "Could not connect to auth db.");
