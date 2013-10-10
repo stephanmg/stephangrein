@@ -15,11 +15,16 @@
 #===============================================================================
 #
 # header {{{
-## {{{ package's name 
+## {{{ module name 
 package MyApp;
 ## }}}
 
-## {{{ modules 
+## {{{ consistency 
+use strict;
+no warnings qw{qw}; 
+## }}}
+
+## {{{ dependencies 
 use Template;
 use Dancer ':syntax';
 use Dancer::Plugin::SiteMap;
@@ -34,11 +39,7 @@ use MIME::Base64;
 use Exporter;
 ## }}}
 #
-## {{{ warnings
-no warnings qw{qw}; 
-## }}}
-
-## {{{ exports
+## {{{ exports 
 our @ISA = qw(Exporter);
 our @EXPORT = qw($EMOTICONS_DIR %EMOTICONS emoticonize unemoticonize);
 ## }}}
@@ -64,12 +65,25 @@ set 'traces' => 1;
 set 'server_tokens' => 0;
 ## }}}
 
-## {{{ additional variables 
-my $admin_user = 'admin';
+## {{{ constants 
+use constant ADMIN_USER => 'admin';
+
+use constant NAVIGATION => 
+    qq(<ul class="box">
+    <li><a href="/">Home</a></li> 
+    <li><a href="/About">About</a></li>
+    <li><a href="/Research">Research Statement</a></li>
+    <li><a href="/CV">Curriculum Vitae</a></li>
+    <li><a href="/Publications">Publications</a></li>
+    <li><a href="/pub/">Downloads</a></li>
+    <li><a href="/Imprint">Imprint</a></li>
+    <li><a href="/Blog">Blog</a></li>
+    </ul>);
 ## }}}
 # }}}
 
-# emoticons {{{
+# main page {{{
+## {{{ emoticons handling
 ## {{{ images 
 our $EMOTICONS_DIR = '/images/emoticons';
 our %EMOTICONS = (
@@ -107,23 +121,8 @@ sub unemoticonize {
     return $text;   
 }
 ## }}}
-# }}}
+## }}}
 
-# navigation string {{{
-use constant NAVIGATION => 
-    qq(<ul class="box">
-    <li><a href="/">Home</a></li> 
-    <li><a href="/About">About</a></li>
-    <li><a href="/Research">Research Statement</a></li>
-    <li><a href="/CV">Curriculum Vitae</a></li>
-    <li><a href="/Publications">Publications</a></li>
-    <li><a href="/pub/">Downloads</a></li>
-    <li><a href="/Imprint">Imprint</a></li>
-    <li><a href="/Blog">Blog</a></li>
-    </ul>);
-# }}}
-
-# main page {{{
 ## {{{ flash message 
 my $flash;
 
@@ -159,12 +158,12 @@ sub connect_db {
 
 ## {{{ hooks 
 hook 'before_template_render' => sub {
-	my $tokens = shift;
-	$tokens->{'login_url'} = uri_for('/Blog/login');
-	$tokens->{'logout_url'} = uri_for('/Blog/logout');
-  $tokens->{'useradd_url'} = uri_for('/Blog/useradd');
-  $tokens->{'password_recovery_url'} = uri_for('/Blog/recover_password');
-  $tokens->{'userpages_url'} = uri_for('/Blog/users');
+    my $tokens = shift;
+    $tokens->{'login_url'} = uri_for('/Blog/login');
+    $tokens->{'logout_url'} = uri_for('/Blog/logout');
+    $tokens->{'useradd_url'} = uri_for('/Blog/useradd');
+    $tokens->{'password_recovery_url'} = uri_for('/Blog/recover_password');
+    $tokens->{'userpages_url'} = uri_for('/Blog/users');
 };
 ## }}}
 
@@ -239,7 +238,7 @@ any ['post', 'get'] => '/Blog/delete_comment/*' => sub {
         my $results = $sth->fetchrow_hashref;
         my $author = $results->{'author'};
         my $article_id = $results->{'article_id'};
-        if ($author ne session('user') && session('user') ne $admin_user) {
+        if ($author ne session('user') && session('user') ne ADMIN_USER) {
             set_flash("Can only deleted own comments! Comment no. " . $id . " is not your comment for entry no. " . $article_id . ". Refused.");
             redirect '/Blog';
         } else {
@@ -293,7 +292,7 @@ any ['get', 'post'] => '/Blog/edit_comment/*' => sub {
         $sth->execute($id);
         
         my $author = ($sth->fetchrow_hashref)->{'author'};
-        if ($author ne session('user') && session('user') ne $admin_user) {
+        if ($author ne session('user') && session('user') ne ADMIN_USER) {
             set_flash("Can only edit own comments. Comment No. " . $id . " is not your own comment. Refused.");
             redirect '/Blog';
         } else {
@@ -386,7 +385,7 @@ any ['post', 'get'] => '/Blog/delete/*' => sub {
         my $sth = $dbh->prepare($sql) or die $dbh->errstr;
         $sth->execute($id);
 		    my $author = ($sth->fetchrow_hashref)->{'author'};
-        if ($author ne session('user') && session('user') ne $admin_user) {
+        if ($author ne session('user') && session('user') ne ADMIN_USER) {
             set_flash("Can only deleted own entries! Entry no. " . $id . " is not your entry. Refused.");
             redirect '/Blog';
         } else {
@@ -732,6 +731,7 @@ get '/' . $_ => route_callback($_, NAVIGATION) for @routes;
 ## }}}
 # }}}
 
+# extensions {{{
 # captcha {{{
 ## {{{ security pass 
 sub random_pass {
@@ -779,7 +779,7 @@ sub destroy_captcha {
 ## }}}
 # }}}
 
-# sendmail {{{
+## {{{ sendmail 
 #===  FUNCTION  ================================================================
 #         NAME: sendmail
 #      PURPOSE: 
@@ -815,8 +815,13 @@ sub sendmail {
     $mailer->dataend;
     $mailer->quit;
 }
+## }}}
 # }}}
 
-# initializer {{{
+# init {{{
 true;
 # }}}
+
+# footer {{{
+__DATA__
+# }
