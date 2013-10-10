@@ -15,7 +15,7 @@
 #===============================================================================
 #
 # header {{{
-## {{{ module name 
+## {{{ module's name 
 package MyApp;
 ## }}}
 
@@ -46,7 +46,6 @@ our @EXPORT_OK = qw(connect_db);
 ## }}}
 
 ## {{{ settings 
-our $VERSION = '0.1';
 set 'layout' => 'new_main';
 set 'session' => 'Simple';
 set 'database' => './lib/database.db';
@@ -67,6 +66,8 @@ set 'server_tokens' => 0;
 ## }}}
 
 ## {{{ constants 
+use constant VERSION => "0.1";
+
 use constant ADMIN_USER => 'admin';
 
 use constant NAVIGATION => 
@@ -158,6 +159,7 @@ sub connect_db {
 ## }}}
 
 ## {{{ hooks 
+## {{{ 'before_template_render'
 hook 'before_template_render' => sub {
     my $tokens = shift;
     $tokens->{'login_url'} = uri_for('/Blog/login');
@@ -166,6 +168,7 @@ hook 'before_template_render' => sub {
     $tokens->{'password_recovery_url'} = uri_for('/Blog/recover_password');
     $tokens->{'userpages_url'} = uri_for('/Blog/users');
 };
+## }}}
 ## }}}
 
 ## {{{ routes 
