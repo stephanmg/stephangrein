@@ -10,21 +10,21 @@ before_install:
    - sudo apt-get install libgd2-noxpm-dev
 
 install:
-   - cpanm -q -n Template
-   - cpanm -q -n Dancer
-   - cpanm -q -n Dancer::Plugin::SiteMap
-   - cpanm -q -n Dancer::Plugin::DirectoryView
-   - cpanm -q -n Dancer::Plugin::Auth::Htpasswd
-   - cpanm -q -n DBD::SQLite
-   - cpanm -q -n File::Slurp
-   - cpanm -q -n Crypt::SaltedHash
-   - cpanm -q -n GD
-   - cpanm -q -n GD::SecurityImage
-   - cpanm -q -n Dancer::Plugin::Captcha::SecurityImage 
-   - cpanm -q -n MIME::Lite
-   - cpanm -q -n Net::SMTP
-   - cpanm -q -n Net::SMTP::SSL
-   - cpanm -q -n Net::SMTP::TLS
+   - cpanm -q -n --skip-installed Template
+   - cpanm -q -n --skip-installed Dancer
+   - cpanm -q -n --skip-installed Dancer::Plugin::SiteMap
+   - cpanm -q -n --skip-installed Dancer::Plugin::DirectoryView
+   - cpanm -q -n --skip-installed Dancer::Plugin::Auth::Htpasswd
+   - cpanm -q -n --skip-installed DBD::SQLite
+   - cpanm -q -n --skip-installed File::Slurp
+   - cpanm -q -n --skip-installed Crypt::SaltedHash
+   - cpanm -q -n --skip-installed GD
+   - cpanm -q -n --skip-installed GD::SecurityImage
+   - cpanm -q -n --skip-installed Dancer::Plugin::Captcha::SecurityImage 
+   - cpanm -q -n --skip-installed MIME::Lite
+   - cpanm -q -n --skip-installed Net::SMTP
+   - cpanm -q -n --skip-installed Net::SMTP::SSL
+   - cpanm -q -n --skip-installed Net::SMTP::TLS
 
 notifications:
    recipients:
