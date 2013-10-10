@@ -41,7 +41,7 @@ use Exporter;
 #
 ## {{{ exports 
 our @ISA = qw(Exporter);
-our @EXPORT = qw($EMOTICONS_DIR %EMOTICONS emoticonize unemoticonize);
+our @EXPORT = qw($EMOTICONS_DIR %EMOTICONS emoticonize unemoticonize connect_db);
 ## }}}
 
 ## {{{ settings 
