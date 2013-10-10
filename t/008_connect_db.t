@@ -26,5 +26,5 @@ use Dancer::Test;
 use constant DATABASE => 'database.db';
 use constant AUTH => 'auth.db';
 
-ok(connect_db(DATABASE), "Could not connect to database db");
-ok(connect_db(AUTH), "Could not connect to auth db.");
+ok(connect_db(DATABASE) ne  "" , "Could not connect to database db");
+ok(connect_db(AUTH) ne "", "Could not connect to auth db.");

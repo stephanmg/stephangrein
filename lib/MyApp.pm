@@ -146,7 +146,7 @@ sub get_flash {
 ## {{{ database handling 
 sub connect_db {
     my $db = shift;
-    my $dbh;
+    my $dbh = "";
 
     if (!$db) {
         die("No database name given: $!");
