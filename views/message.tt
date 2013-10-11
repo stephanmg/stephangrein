@@ -16,42 +16,30 @@
             <hr class="noscreen" />
             
             <div id="content-in">
-<h2><%user %>s user page</h2>
+<h2>Messages</h2>
 <% IF err %><p class=error><strong>Error:</strong> <% err %><% END %>
-<% IF session.user == user %>
- <% IF emoticons %>
+<% IF emoticons %>
   <div id="emoticons">
   <% FOREACH key in emoticons.keys %>
     <a href="#" id="<%key%>" title="<%key%>" onclick="Emoticons('<%key%>')"><% emoticons.$key%></a><br />
   <%END%>
   </div>
   <% END%>  
-<form action="<% userpages_url%>/<% user %>" method=post>
+<form action="<% messages_url %>/<%send_to_user%>" method=post>
   <dl>
-    <dt>Username: <%user %>
-    <dt>Email:
-    <dd><input type=text name=mail value=<%email%>>
-    <dt>About:
-    <textarea id=emoticons_form name=about_text cols="50" rows="20"> <%about_text%> </textarea>
-    <dd><input type=submit value=Edit>
+    <dt>Subject:
+    <dd><input type=text name=subject>
+    <dt>Message:
+    <dd><input type=text name=message id=emoticons_form>
+    <dd><input type=submit value=Send message>
   </dl>
 </form>
-<h3> <a href="<%messages_url%>/<%user%>">Mailbox</a> </h3>
 
-<h2> Registered Users </h2>
-<ul style="list-style-type:square; color:#02AAFC; font-weight:bold;"> 
-  <% FOREACH id IN all_users.keys %>
-  <li> <%all_users.$id.user%> (<a href="/Blog/users/<%all_users.$id.user%>">more</a> / <a href="/Blog/message/<%all_users.$id.user%>">send message</a>) </li>
-  <% END %>
-</ul>
-<% ELSE %>
-  <dl>
-    <dt>Username:
-    <dd><%user%>
-    <dt>About:
-    <dd><%about_text%>
-    <dt>EMail:
-    <dd><%email%>
-  <h3> <a href="<%messages_url%>/<%user%>">Mailbox</a> </h3>
-<% END %>
-         </div> <!-- /content-in -->
+<% FOREACH id IN all_messages.keys %>
+  <li>
+    <h3> <% all_messages.$id.subject %> from <%all_messages.$id.from_user%> </h3>
+    <%all_messages.$id.message%> (Action: <a href="<%delete_message%>/<%all_messages.$id.id%>">delete</a> / <a href="<%reply_message%>/<%all_messages.$id.id%>">reply</a>)
+    <br />
+  </li>
+<%END%>
+</div> <!-- /content-in -->

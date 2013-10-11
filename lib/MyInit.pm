@@ -67,5 +67,7 @@ sub init_db {
 	$db->do($schema) or die $db->errstr;
   $schema = read_file('./lib/schema_comments.sql');
 	$db->do($schema) or die $db->errstr;
+  $schema = read_file('./lib/schema_messages.sql');
+  $db->do($schema) or die $db->errstr;
 }
 # }}}

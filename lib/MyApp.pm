@@ -167,6 +167,7 @@ hook 'before_template_render' => sub {
     $tokens->{'useradd_url'} = uri_for('/Blog/useradd');
     $tokens->{'password_recovery_url'} = uri_for('/Blog/recover_password');
     $tokens->{'userpages_url'} = uri_for('/Blog/users');
+    $tokens->{'messages_url'} = uri_for('/Blog/message');
 };
 ## }}}
 ## }}}
@@ -600,20 +601,25 @@ my ($user) = splat;
 	my $dbh = connect_db(setting('db_users'));
 
    my $temp = NAVIGATION;
-   $temp =~ s!<li>(<a href="/Blog/login">.*?</li>)!<li id="nav-active">$1!;
+   $temp =~ s!<li>(<a href="/Blog">.*?</li>)!<li id="nav-active">$1!;
 
     my $sth;
     $sth  = $dbh->prepare("SELECT user, email, about FROM users WHERE user = ?");
     $sth->execute($user) or die $sth->errstr;
     my $res = $sth->fetchrow_hashref();
     my $db_user = $res->{user};
+    my $all_users;
     if ($db_user) {
 
-       my $pretext = $res->{about};
+       my $pretext = $res->{about} || "no about text assigned";
         my $user = session('user');
         if ($user) {
          if ($db_user eq session('user')) {
         $pretext = unemoticonize($pretext, \%EMOTICONS);
+        $sth = $dbh->prepare("SELECT user FROM users");
+        $sth->execute() or die $sth->errstr;
+        $all_users = $sth->fetchall_hashref('user');
+        
         } else {
             # show smileys for other users in about text ...
         }
@@ -626,7 +632,8 @@ my ($user) = splat;
     'user' => $db_user,
     'email' => $res->{email} || "no email assigned",
     'about_text' => $pretext || "insert your above text here ... ", # TODO possibily use a hashref to all values in hash... and use them in userpages.tt template.
-    'emoticons' => \%EMOTICONS
+    'emoticons' => \%EMOTICONS,
+    'all_users' => $all_users
     }, 
     {
     layout => "new_main"
@@ -710,6 +717,69 @@ get '/Blog/logout' => sub {
 	redirect '/Blog';
 };
 ### }}}
+
+## {{{ '/Blog/message/*'
+any ['get', 'post'] => '/Blog/message/*' => sub {
+    my $err;
+    my ($send_to_user) = splat;
+    my $all_msgs;
+
+   my $temp = NAVIGATION;
+   $temp =~ s!<li>(<a href="/Blog">.*?</li>)!<li id="nav-active">$1!;
+    
+    my $dbh = connect_db(setting('database'));
+    my $sth = $dbh->prepare("SELECT id, from_user, message, subject FROM messages WHERE to_user =?");
+    $sth->execute($send_to_user) or die $sth->errstr;
+    $all_msgs = $sth->fetchall_hashref('from_user');
+
+    if (request->method() eq "POST") {
+        if (defined(session('user')) && session('user') ne $send_to_user) {
+            my $send_from_user = session('user');
+            $sth = $dbh->prepare("INSERT INTO messages (from_user, to_user, subject, message) VALUES (?, ?, ?, ?)");
+            $sth->execute($send_from_user, $send_to_user, params->{'subject'}, params->{'message'}) or die $sth->errstr;
+            redirect "/Blog/message/$send_from_user";
+        } elsif (!defined(session('user'))) {
+            set_flash("Login to send a message to the user $send_to_user");
+            redirect '/Blog';
+        } else {
+            set_flash("Cannot send a message to oneself.");
+            redirect "/Blog/message/$send_to_user";
+        }
+    }
+    
+    if (request->method() eq "GET") {
+        if(defined(session('user'))) { 
+           template 'message.tt' => {
+                'err' => $err,
+                'send_to_user' => $send_to_user,
+                'all_messages' => $all_msgs,
+                'delete_message' => uri_for('/Blog/delete_message'),
+                'reply_message' => uri_for('/Blog/reply_message'),
+                'navigation' => $temp
+            },
+            {
+                layout => 'new_main'
+            };
+        } else {
+            set_flash("Login to access your mailbox or to send messages!");
+            redirect '/Blog';
+        }
+    }
+};
+## }}}
+
+## {{{ '/Blog/delete_message/*'
+any ['get', 'post'] => '/Blog/delete_message/*' => sub {
+    # TODO to be implemented
+};
+## }}}
+
+## {{{ '/Blog/reply_message/*'
+any ['get', 'post'] => '/Blog/reply_message/*' => sub {
+    # TODO to be implemented
+};
+## }}}
+
 ## }}}
 
 ## {{{ generic route handler 
