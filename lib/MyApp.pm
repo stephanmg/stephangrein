@@ -728,9 +728,9 @@ any ['get', 'post'] => '/Blog/message/*' => sub {
    $temp =~ s!<li>(<a href="/Blog">.*?</li>)!<li id="nav-active">$1!;
     
     my $dbh = connect_db(setting('database'));
-    my $sth = $dbh->prepare("SELECT id, from_user, message, subject FROM messages WHERE to_user =?");
+    my $sth = $dbh->prepare("SELECT id, from_user, message, subject FROM messages WHERE to_user =? ORDER BY id DESC");
     $sth->execute($send_to_user) or die $sth->errstr;
-    $all_msgs = $sth->fetchall_hashref('from_user');
+    $all_msgs = $sth->fetchall_hashref('id');
 
     if (request->method() eq "POST") {
         if (defined(session('user')) && session('user') ne $send_to_user) {
