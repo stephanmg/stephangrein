@@ -779,7 +779,6 @@ any ['get', 'post'] => '/Blog/reply_message/*' => sub {
     # TODO to be implemented
 };
 ## }}}
-
 ## }}}
 
 ## {{{ generic route handler 

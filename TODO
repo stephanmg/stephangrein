@@ -1,11 +1,11 @@
 ############
 ### high ###
 ############
-user communication? (send message to users?, that is use a new table 'mailbox' message_from_user as foreign key, text, message_to_user from 'auth' as foreign key, and select all comments in mailbox of the current user 'my_user' from the mailbox table with the foreign key then)->add page which lists all availale users, too (insert smileys, date too and order message by ID ... -> insert action REPLY and DELETE) -> fix CSS layout please ...  additionally think about how one can notice the user that they have new messages (maybe via email notification since email was supplied into the database when registering was done?)
+user notifications: insert smileys, date (for notification of new messages) too and order message by ID && insert action REPLY and DELETE) 
+-> fix CSS layout please ... additionally think about how one can notice the user that they have new messages (maybe via email notification since email was supplied into the database when registering was done?)
 
-more perl tests to be added for existing code ...
-
-imrove crosslinkining within the webpage (one point: show  users who are available ... list them (under Users on the userpages.tt template => i. e. only if logged in!!))
+more perl tests to be added for existing code 
+imrove crosslinkining within the webpage
 
 ##############
 ### middle ###
@@ -22,3 +22,4 @@ layout improvements of webpage in general
 more smileys / copyright smileys?
 using db roles for security purposes?
 use ssl / https for page with lighttpd
+
