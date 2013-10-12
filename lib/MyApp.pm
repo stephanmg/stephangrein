@@ -168,6 +168,7 @@ hook 'before_template_render' => sub {
     $tokens->{'password_recovery_url'} = uri_for('/Blog/recover_password');
     $tokens->{'userpages_url'} = uri_for('/Blog/users');
     $tokens->{'messages_url'} = uri_for('/Blog/message');
+    $tokens->{'reply_message_url'} = uri_for('/Blog/reply_message');
 };
 ## }}}
 ## }}}
@@ -770,13 +771,78 @@ any ['get', 'post'] => '/Blog/message/*' => sub {
 
 ## {{{ '/Blog/delete_message/*'
 any ['get', 'post'] => '/Blog/delete_message/*' => sub {
-    # TODO to be implemented
+    my $err;
+    my ($id) = splat;
+
+    if (not session('user')) {
+        send_error("Not logged in", 401);
+    }   
+
+    my $dbh = connect_db(setting('database'));
+    my $sql = 'select id, to_user from messages where id = ?';
+    my $sth = $dbh->prepare($sql) or die $dbh->errstr;
+    $sth->execute($id);
+    my $result = ($sth->fetchrow_hashref);
+    my $message_user = $result->{'to_user'};
+
+    if ($message_user ne session('user') && session('user') ne ADMIN_USER) {
+        set_flash("Can only delete messages in own inbox (your user name is: " . session('user') . ")");
+        redirect "/Blog/message/" . session('user');
+    } else {
+        $sql = 'delete from messages where id = ?';
+        $sth = $dbh->prepare($sql) or die $dbh->errstr;
+        $sth->execute($id);
+        set_flash("Deleted successfully message with no. " . $id);
+        redirect "/Blog/message/" . session('user');
+   }
 };
 ## }}}
 
 ## {{{ '/Blog/reply_message/*'
 any ['get', 'post'] => '/Blog/reply_message/*' => sub {
-    # TODO to be implemented
+    my $err;
+    my ($id) = splat;
+
+   my $temp = NAVIGATION;
+   $temp =~ s!<li>(<a href="/Blog">.*?</li>)!<li id="nav-active">$1!;
+
+    if (not session('user')) {
+        send_error("Not logged in", 401);
+    }   
+
+        my $dbh = connect_db(setting('database'));
+        my $sql = 'select * from messages where id = ?';
+        my $sth = $dbh->prepare($sql) or die $dbh->errstr;
+        $sth->execute($id);
+        
+        my $res = ($sth->fetchrow_hashref);
+        my $to_user = $res->{'to_user'};
+        my $from_user = $res->{'from_user'};
+        my $message = $res->{'message'};
+        my $subject = $res->{'subject'};
+       
+    	if ( request->method() eq "GET" ) {
+      
+    template 'message_reply.tt' => {
+                'err' => $err,
+                'to_user' => $to_user,
+                'id' => $id,
+                'from_user' => $from_user,
+                'message' => $message,
+                'subject' => $subject,
+                'navigation' => $temp
+            },
+            {
+                layout => 'new_main'
+            };
+        
+    } else {
+        # TODO insert values in table
+        $sth = $dbh->prepare("INSERT INTO messages (from_user, to_user, subject, message) VALUES (?, ?, ?, ?)") or die $dbh->errstr;
+        $sth->execute($to_user, $from_user, params->{'subject'}, params->{'message'});
+        set_flash("Message send to $from_user");
+        redirect "/Blog/message/" . session('user');
+    }
 };
 ## }}}
 ## }}}
