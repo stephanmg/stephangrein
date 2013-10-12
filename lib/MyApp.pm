@@ -169,6 +169,7 @@ hook 'before_template_render' => sub {
     $tokens->{'userpages_url'} = uri_for('/Blog/users');
     $tokens->{'messages_url'} = uri_for('/Blog/message');
     $tokens->{'reply_message_url'} = uri_for('/Blog/reply_message');
+    $tokens->{'toggle_read_message_url'} = uri_for('/Blog/toggle_read_message');
 };
 ## }}}
 ## }}}
@@ -837,12 +838,17 @@ any ['get', 'post'] => '/Blog/reply_message/*' => sub {
             };
         
     } else {
-        # TODO insert values in table
         $sth = $dbh->prepare("INSERT INTO messages (from_user, to_user, subject, message) VALUES (?, ?, ?, ?)") or die $dbh->errstr;
         $sth->execute($to_user, $from_user, params->{'subject'}, params->{'message'});
         set_flash("Message send to $from_user");
         redirect "/Blog/message/" . session('user');
     }
+};
+## }}}
+
+## {{{ '/Blog/toggle_read_message/*'
+any ['get', 'post'] => '/Blog/toggle_read_message/*' => sub {
+# TODO depending on id set entry in table message read_status to 0 or 1 => meaning true or false (that state can be used in display messages to indicate that, for example bold font ... )
 };
 ## }}}
 ## }}}

@@ -38,7 +38,7 @@
 <% FOREACH id IN all_messages.keys %>
   <li>
     <h3> <% all_messages.$id.subject %> from <%all_messages.$id.from_user%> </h3>
-    <%all_messages.$id.message%> (Action: <a href="<%delete_message%>/<%all_messages.$id.id%>">delete</a> / <a href="<%reply_message%>/<%all_messages.$id.id%>">reply</a>)
+    <%all_messages.$id.message%> (Action: <a href="<%delete_message%>/<%all_messages.$id.id%>">delete</a> / <a href="<%reply_message%>/<%all_messages.$id.id%>">reply</a> / <a href="<%toggle_read_message_url%>/<%all_messages.$id.id%>">toggle (un)-read</a>)
     <br />
   </li>
 <%END%>
