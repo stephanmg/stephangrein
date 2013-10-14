@@ -25,6 +25,7 @@
   <%END%>
   </div>
   <% END%>  
+<% IF session.user != send_to_user %>
 <form action="<% messages_url %>/<%send_to_user%>" method=post>
   <dl>
     <dt>Subject:
@@ -34,6 +35,9 @@
     <dd><input type=submit value=Send message>
   </dl>
 </form>
+<% ELSE %>
+<span style="color:red"> Attention, cannot send message to oneself! </span>
+<% END %>
 
 <% IF session.user == send_to_user %>
 <% FOREACH id IN all_messages.keys.nsort.reverse %>

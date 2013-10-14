@@ -883,12 +883,9 @@ any ['get', 'post'] => '/Blog/toggle_read_message/*' => sub {
         $sth->execute($toggle, $id);
         redirect '/Blog/message/' . $to_user;
     } else {
-        set_flash("Log in to access your mailbox");
+        set_flash("Log in to access your mailbox!");
         redirect '/Blog';
     }
- 
-
-# TODO depending on id set entry in table message read_status to 0 or 1 => meaning true or false (that state can be used in display messages to indicate that, for example bold font ... )
 };
 ## }}}
 ## }}}
