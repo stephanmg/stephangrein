@@ -16,7 +16,6 @@ cleanup code even more and directories
 add datum to comments / edit comments posts (therefore date string in table comments necessary and update the add_comment/edit_comment form to insert also a date in the table!!!) -> update last update comment 
 show only 50 entries, and then make links to access more items of blog. / maybe implement the possibility to sort different the entries. lets say /Blog/entry_order/date and /Blog/entry_order/date_rev -> also we have /Blog/entry_order/50 or /Blog/entry_order/100
 
-
 ###########
 ### low ###
 ###########

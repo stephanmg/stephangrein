@@ -30,8 +30,8 @@ use constant AUTH => 'auth.db';
 my $dbh_db   = connect_db(DATABASE);
 my $dbh_auth = connect_db(AUTH);
 
-ok (defined(dbh_db), "DBH database not defined, i. e. connect failed.");
-ok (defined(dbh_auth), "DBH auth not defined, i. e. connect failed.");
+ok (defined($dbh_db), "DBH database not defined, i. e. connect failed.");
+ok (defined($dbh_auth), "DBH auth not defined, i. e. connect failed.");
 
 ok (disconnect_db($dbh_db), "Could not disconnect from db database.");
 ok (disconnect_db($dbh_auth), "Could not disconnect from db auth.");
