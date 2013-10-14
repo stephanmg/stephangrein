@@ -746,16 +746,32 @@ get '/Blog/logout' => sub {
 ### }}}
 
 ## {{{ '/Blog/message/*'
-any ['get', 'post'] => '/Blog/message/*' => sub {
+any ['get', 'post'] => '/Blog/message/**' => sub {
     my $err;
-    my ($send_to_user) = splat;
+    my ($route) = splat;
+    my ($send_to_user, $mbox_folder) = @$route;
+    #my ($send_to_user, $mbox_folder) = splat;
     my $all_msgs;
 
    my $temp = NAVIGATION;
    $temp =~ s!<li>(<a href="/Blog">.*?</li>)!<li id="nav-active">$1!;
     
     my $dbh = connect_db(setting('database'));
-    my $sth = $dbh->prepare("SELECT read, id, from_user, message, subject FROM messages WHERE to_user =? ORDER BY id DESC");
+    my $sth;
+    if ($mbox_folder) {
+        if ($mbox_folder eq 'Inbox') { 
+            $sth = $dbh->prepare("SELECT read, id, from_user, message, subject FROM messages WHERE to_user =? ORDER BY id DESC");
+        } elsif ($mbox_folder eq 'Sent') {
+            $sth = $dbh->prepare("SELECT read, id, from_user, message, subject FROM messages WHERE from_user =? ORDER BY id DESC");
+        } else { 
+            $sth = $dbh->prepare("SELECT read, id, from_user, message, subject FROM messages WHERE to_user =? ORDER BY id DESC");
+            $mbox_folder = 'Inbox';
+        }  
+     } else {
+            $sth = $dbh->prepare("SELECT read, id, from_user, message, subject FROM messages WHERE to_user =? ORDER BY id DESC");
+            $mbox_folder = 'Inbox';
+}
+
     $sth->execute($send_to_user) or die $sth->errstr;
     $all_msgs = $sth->fetchall_hashref('id');
 
@@ -787,6 +803,7 @@ any ['get', 'post'] => '/Blog/message/*' => sub {
                 'err' => $err,
                 'send_to_user' => $send_to_user,
                 'unread_messages' => $count,
+                'mbox_folder' => $mbox_folder,
                 'mail_box_state' => $mbox_state,
                 'all_messages' => $all_msgs,
                 'delete_message' => uri_for('/Blog/delete_message'),

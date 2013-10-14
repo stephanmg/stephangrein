@@ -35,8 +35,6 @@
     <dd><input type=submit value=Send message>
   </dl>
 </form>
-<% ELSE %>
-<span style="color:red"> Attention, cannot send message to oneself! </span>
 <% END %>
 
 <% IF session.user == send_to_user %>
@@ -49,6 +47,7 @@ You have <%unread_messages%> unread messages. <br />
 </noscript>
 <% END %>
 
+<h3> <% mbox_folder %>: </h3>
 <% FOREACH id IN all_messages.keys.nsort.reverse %>
   <li>
     <h3> <% all_messages.$id.subject %> from <%all_messages.$id.from_user%> </h3>
@@ -62,4 +61,6 @@ You have <%unread_messages%> unread messages. <br />
   </li>
 <%END%>
 <%END%>
+<br />
+Folders: <a href="<%messages_url %>/<%send_to_user%>/Inbox">Inbox</a> / <a href="<%messages_url %>/<%send_to_user%>/Sent"> Sent </a>
 </div> <!-- /content-in -->
