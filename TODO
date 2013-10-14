@@ -4,7 +4,7 @@
 user notifications: insert smileys, date (for notification of new messages via email?) too and order message by ID && set somehow read state (use is_read table entry) -> make layout change more cool for read/unread messages ... -> probably show new messages already on login (and use jquery as it can be stylized: http://jqueryui.com/dialog/ maybe but uses iframes...)
 -> fix CSS layout please ... additionally think about how one can notice the user that they have new messages (maybe via email notification since email was supplied into the database when registering was done? or via javascript?)
 use TRANSACTIONS maybe => disconnect from DB savely in lib/MyApp.pm each?
-deleting message of user1 deletes message sent in inbox of user2 => fix this ...
+deleting message of user1 deletes message sent in inbox of user2 => fix this ... -> use table marked_for_deletion with USER, MESSAGE_ID => select all messages from messages where from/to_user = ? and additionally where marked_for_deletion.message_id != messages.id AND marked_for_deletion.user != messages.to/from_user) => this should fix it ... try it 
 
 more perl tests to be added for existing code 
 imrove crosslinkining within the webpage
