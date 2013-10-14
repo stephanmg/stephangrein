@@ -32,6 +32,7 @@ sub init_auth {
 	my $dbh = DBI->connect("dbi:SQLite:dbname=./lib/auth.db") or
 		die $DBI::errstr;
 	my $schema = read_file('./lib/auth.sql');
+  $dbh->do("BEGIN TRANSACTION;") or die $dbh->errstr;
 	$dbh->do($schema) or die $dbh->errstr;
 
 	my $sql = 'insert into users (user, pass) values (?, ?)';
@@ -54,6 +55,9 @@ sub init_auth {
  $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
  $csh->add('test');
 	$sth->execute("admin", $csh->generate) or die $sth->errstr;
+  $dbh->do("COMMIT;") or die $dbh->errstr;
+
+ $dbh->disconnect() or die $dbh->errstr;
 }
 # }}}
 
@@ -62,12 +66,16 @@ sub init_db {
 
 	my $db = DBI->connect("dbi:SQLite:dbname=./lib/database.db") or
 		die $DBI::errstr;
-
+    
+$db->do("BEGIN TRANSACTION;");
 	my $schema = read_file('./lib/schema_entry.sql');
 	$db->do($schema) or die $db->errstr;
   $schema = read_file('./lib/schema_comments.sql');
 	$db->do($schema) or die $db->errstr;
   $schema = read_file('./lib/schema_messages.sql');
   $db->do($schema) or die $db->errstr;
+    $db->do("COMMIT;") or die $db->errstr;
+
+  $db->disconnect() or die $db->errstr;
 }
 # }}}

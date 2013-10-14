@@ -5,4 +5,3 @@ create table if not exists entries (
   author string not null,
   datum string not null
 );
-

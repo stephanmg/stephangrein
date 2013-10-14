@@ -152,10 +152,20 @@ sub connect_db {
         die("No database name given: $!");
     } else {
         $dbh = DBI->connect("dbi:SQLite:dbname=".$db) or die $DBI::errstr;
+        # $dbh->do("BEGIN TRANSACTION; "); or die $dbh->errstr; # TODO use transactions
     }
     return $dbh;
 }
 
+sub disconnect_db {
+    my $dbh = shift;
+    if (!$dbh) { 
+        die("No database handle given: $!");    
+    } else {
+       # $dbh->do("COMMIT;") or die $dbh->errstr; # TODO use transactions
+       $dbh->disconnect() or die $dbh->errstr;
+    }
+}
 ## }}}
 
 ## {{{ hooks 
