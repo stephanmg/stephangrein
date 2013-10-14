@@ -42,7 +42,7 @@ use Exporter;
 ## {{{ exports 
 our @ISA = qw(Exporter);
 our @EXPORT = qw($EMOTICONS_DIR %EMOTICONS emoticonize unemoticonize); 
-our @EXPORT_OK = qw(connect_db);
+our @EXPORT_OK = qw(connect_db disconnect_db) ;
 ## }}}
 
 ## {{{ settings 
@@ -179,6 +179,7 @@ sub disconnect_db {
        # $dbh->do("COMMIT;") or die $dbh->errstr; # TODO use transactions
        $dbh->disconnect() or die $dbh->errstr;
     }
+    return true;
 }
 ## }}}
 
