@@ -40,6 +40,15 @@
 <% END %>
 
 <% IF session.user == send_to_user %>
+<% IF unread_messages > 0 && mail_box_state == 1%>
+<script language="JavaScript">
+alert('You have <%unread_messages%> unread messages.');
+</script>
+<noscript>
+You have <%unread_messages%> unread messages. <br />
+</noscript>
+<% END %>
+
 <% FOREACH id IN all_messages.keys.nsort.reverse %>
   <li>
     <h3> <% all_messages.$id.subject %> from <%all_messages.$id.from_user%> </h3>

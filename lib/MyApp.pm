@@ -143,6 +143,20 @@ sub get_flash {
 }
 ## }}}
 
+## {{{ mailbox state
+my $mailbox_state = 1;
+
+sub get_mailbox_state {
+    return $mailbox_state;
+}
+
+sub set_mailbox_state {
+    my $state = shift;
+
+    $mailbox_state = $state;
+}
+## }}}
+
 ## {{{ database handling 
 sub connect_db {
     my $db = shift;
@@ -760,10 +774,19 @@ any ['get', 'post'] => '/Blog/message/*' => sub {
     }
     
     if (request->method() eq "GET") {
+        my $mbox_state = get_mailbox_state();
+        if ($mbox_state == 1) {
+            set_mailbox_state(0);
+        }
         if(defined(session('user'))) { 
+            $sth = $dbh->prepare("SELECT COUNT(*) FROM messages WHERE to_user=? AND read = 0");
+            my $result = $sth->execute($send_to_user) or die $dbh->errstr;
+            my $count = $sth->fetchrow_array();
            template 'message.tt' => {
                 'err' => $err,
                 'send_to_user' => $send_to_user,
+                'unread_messages' => $count,
+                'mail_box_state' => $mbox_state,
                 'all_messages' => $all_msgs,
                 'delete_message' => uri_for('/Blog/delete_message'),
                 'reply_message' => uri_for('/Blog/reply_message'),
