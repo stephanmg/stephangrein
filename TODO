@@ -1,7 +1,7 @@
 ############
 ### high ###
 ############
-user notifications: insert smileys, date (for notification of new messages via email?) too and order message by ID && set somehow read state (use is_read table entry) -> make layout change more cool for read/unread messages ...
+user notifications: insert smileys, date (for notification of new messages via email?) too and order message by ID && set somehow read state (use is_read table entry) -> make layout change more cool for read/unread messages ... -> probably show new messages already on login
 -> fix CSS layout please ... additionally think about how one can notice the user that they have new messages (maybe via email notification since email was supplied into the database when registering was done? or via javascript?)
 use TRANSACTIONS maybe => disconnect from DB savely in lib/MyApp.pm each?
 
