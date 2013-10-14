@@ -51,12 +51,16 @@ You have <%unread_messages%> unread messages. <br />
 <% FOREACH id IN all_messages.keys.nsort.reverse %>
   <li>
     <h3> <% all_messages.$id.subject %> from <%all_messages.$id.from_user%> </h3>
-    <% IF all_messages.$id.read == 0 %>
+  <% IF mbox_folder == "Inbox" %>
+    <% IF all_messages.$id.read == 0%>
   <span style="color:red">
     <%ELSE %>
    <span style="color:green">
   <%END%>
-    <%all_messages.$id.message%> </span> (Action: <a href="<%delete_message%>/<%all_messages.$id.id%>">delete</a> / <a href="<%reply_message%>/<%all_messages.$id.id%>">reply</a> / <a href="<%toggle_read_message_url%>/<%all_messages.$id.id%>">toggle (un)-read</a>)
+  <% ELSE %>
+    <span style="color:black">
+  <%END%>
+    <%all_messages.$id.message%> </span> <%IF mbox_folder == "Inbox" %> (Action: <a href="<%delete_message%>/<%all_messages.$id.id%>">delete</a> / <a href="<%reply_message%>/<%all_messages.$id.id%>">reply</a> / <a href="<%toggle_read_message_url%>/<%all_messages.$id.id%>">toggle (un)-read</a>) <%END %>
     <br />
   </li>
 <%END%>

@@ -749,6 +749,11 @@ get '/Blog/logout' => sub {
 any ['get', 'post'] => '/Blog/message/**' => sub {
     my $err;
     my ($route) = splat;
+
+    if (length(@$route) > 2) {
+        redirect '/Blog/'  
+    }
+
     my ($send_to_user, $mbox_folder) = @$route;
     #my ($send_to_user, $mbox_folder) = splat;
     my $all_msgs;
@@ -778,7 +783,7 @@ any ['get', 'post'] => '/Blog/message/**' => sub {
     if (request->method() eq "POST") {
         if (defined(session('user')) && session('user') ne $send_to_user) {
             my $send_from_user = session('user');
-            $sth = $dbh->prepare("INSERT INTO messages (from_user, to_user, subject, message) VALUES (?, ?, ?, ?)");
+            $sth = $dbh->prepare("INSERT INTO messages (from_user, to_user, subject, message, read) VALUES (?, ?, ?, ?)");
             $sth->execute($send_from_user, $send_to_user, params->{'subject'}, params->{'message'}) or die $sth->errstr;
             redirect "/Blog/message/$send_from_user";
         } elsif (!defined(session('user'))) {
