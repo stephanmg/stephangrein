@@ -740,7 +740,7 @@ any ['get', 'post'] => '/Blog/message/*' => sub {
    $temp =~ s!<li>(<a href="/Blog">.*?</li>)!<li id="nav-active">$1!;
     
     my $dbh = connect_db(setting('database'));
-    my $sth = $dbh->prepare("SELECT id, from_user, message, subject FROM messages WHERE to_user =? ORDER BY id DESC");
+    my $sth = $dbh->prepare("SELECT read, id, from_user, message, subject FROM messages WHERE to_user =? ORDER BY id DESC");
     $sth->execute($send_to_user) or die $sth->errstr;
     $all_msgs = $sth->fetchall_hashref('id');
 
@@ -858,6 +858,36 @@ any ['get', 'post'] => '/Blog/reply_message/*' => sub {
 
 ## {{{ '/Blog/toggle_read_message/*'
 any ['get', 'post'] => '/Blog/toggle_read_message/*' => sub {
+    my $err;
+    my ($id) = splat;
+
+    if (not session('user')) {
+        send_error("Not logged in", 401);
+    }   
+
+   my $dbh = connect_db(setting('database'));
+   my $sql = 'select * from messages where id = ?';
+   my $sth = $dbh->prepare($sql) or die $dbh->errstr;
+   $sth->execute($id);
+       
+   my $res = ($sth->fetchrow_hashref);
+   my $to_user = $res->{'to_user'};
+   my $from_user = $res->{'from_user'};
+   my $message = $res->{'message'};
+   my $subject = $res->{'subject'};
+   my $read = $res->{'read'};
+
+    if ($to_user eq session('user')) {
+        $sth = $dbh->prepare("UPDATE messages set read=? WHERE id=?");
+        my $toggle = ($read == 0 ? 1 : 0);
+        $sth->execute($toggle, $id);
+        redirect '/Blog/message/' . $to_user;
+    } else {
+        set_flash("Log in to access your mailbox");
+        redirect '/Blog';
+    }
+ 
+
 # TODO depending on id set entry in table message read_status to 0 or 1 => meaning true or false (that state can be used in display messages to indicate that, for example bold font ... )
 };
 ## }}}
