@@ -1,21 +1,22 @@
 ############
 ### high ###
 ############
-allowing users to delete into Delete folder. actions only allowed when in own inbox (especially delete/toggle and reply!) => makes sense, delete and sent should not be toggled read etc or replied to usually => if it should be the case then we need to think about the read status toggle again since both user could then toggle! (i. e. to_user and from_user)
+periodically check for new messages if user has not logged in a certain time => send message with new emails (in auth table we need a column with DATE) => then send an email works...
+peridoically check for deleted messages (status == 2) => then finally wipe them out of the database (warn possibly the users per mail before?! bad... or dont wipe at all .. think about that)
 
-user notifications: insert smileys, date (for notification of new messages via email?) too and order message by ID && set somehow read state (use is_read table entry) -> make layout change more cool for read/unread messages ... -> probably show new messages already on login (and use jquery as it can be stylized: http://jqueryui.com/dialog/ maybe but uses iframes...)
+insert smileys in all remaining pages 
+layout change more cool for read/unread messages (deelted messages grey / sent messages normal font)
 
--> fix CSS layout please ... additionally think about how one can notice the user that they have new messages (maybe via email notification since email was supplied into the database when registering was done? or via javascript?)
+imrove crosslinkining within the webpage and css style
 
-use TRANSACTIONS maybe => disconnect from DB savely in lib/MyApp.pm each?
-
-more perl tests to be added for existing code 
-imrove crosslinkining within the webpage
+optional: stylize query dialog with jquery, but this uses iframes, think about that too
+optional: use TRANSACTIONS maybe => disconnect from DB savely in lib/MyApp.pm each?
 
 ##############
 ### middle ###
 ##############
 cleanup code even more and directories
+optional: more perl tests 
 
 add datum to comments / edit comments posts (therefore date string in table comments necessary and update the add_comment/edit_comment form to insert also a date in the table!!!) -> update last update comment 
 show only 50 entries, and then make links to access more items of blog. / maybe implement the possibility to sort different the entries. lets say /Blog/entry_order/date and /Blog/entry_order/date_rev -> also we have /Blog/entry_order/50 or /Blog/entry_order/100
@@ -26,4 +27,3 @@ show only 50 entries, and then make links to access more items of blog. / maybe 
 more smileys / copyright smileys?
 use ssl / https for page with lighttpd
 using db roles for security purposes?
-use folders for messaging
