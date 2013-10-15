@@ -74,6 +74,8 @@ $db->do("BEGIN TRANSACTION;");
 	$db->do($schema) or die $db->errstr;
   $schema = read_file('./lib/schema_messages.sql');
   $db->do($schema) or die $db->errstr;
+  $schema = read_file('./lib/schema_deleted.sql');
+  $db->do($schema) or die $db->errstr;
     $db->do("COMMIT;") or die $db->errstr;
 
   $db->disconnect() or die $db->errstr;

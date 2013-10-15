@@ -765,18 +765,19 @@ any ['get', 'post'] => '/Blog/message/**' => sub {
     my $sth;
     if ($mbox_folder) {
         if ($mbox_folder eq 'Inbox') { 
-            $sth = $dbh->prepare("SELECT read, id, from_user, message, subject FROM messages WHERE to_user =? ORDER BY id DESC");
+            $sth = $dbh->prepare("SELECT read, messages.id, messages.from_user, message, subject FROM messages, deleted  WHERE messages.to_user =? AND deleted.id = messages.id AND deleted.status = 0 ORDER BY messages.id DESC");
         } elsif ($mbox_folder eq 'Sent') {
-            $sth = $dbh->prepare("SELECT read, id, from_user, message, subject FROM messages WHERE from_user =? ORDER BY id DESC");
-        } else { 
-            $sth = $dbh->prepare("SELECT read, id, from_user, message, subject FROM messages WHERE to_user =? ORDER BY id DESC");
+            $sth = $dbh->prepare("SELECT read, messages.id, messages.from_user, message, subject FROM messages, deleted WHERE messages.from_user =? AND deleted.id = messages.id AND deleted.status != 2 ORDER BY messages.id DESC");
+        } elsif ($mbox_folder eq 'Delete') {
+            $sth = $dbh->prepare("SELECT read, messages.id, messages.from_user, message, subject FROM messages, deleted WHERE messages.to_user = ? AND deleted.id = messages.id AND deleted.status > 0 ORDER BY messages.id DESC"); # TODO
+        } else  { 
+            $sth = $dbh->prepare("SELECT read, messages.id, messages.from_user, message, subject FROM messages, deleted  WHERE messages.to_user =? AND deleted.id = messages.id AND deleted.status = 0 ORDER BY messsages.id DESC");
             $mbox_folder = 'Inbox';
         }  
      } else {
-            $sth = $dbh->prepare("SELECT read, id, from_user, message, subject FROM messages WHERE to_user =? ORDER BY id DESC");
+            $sth = $dbh->prepare("SELECT read, messages.id, messages.from_user, message, subject FROM messages, deleted  WHERE messages.to_user =? AND deleted.id = messages.id AND deleted.status = 0 ORDER BY messages.id DESC");
             $mbox_folder = 'Inbox';
 }
-
     $sth->execute($send_to_user) or die $sth->errstr;
     $all_msgs = $sth->fetchall_hashref('id');
 
@@ -785,6 +786,8 @@ any ['get', 'post'] => '/Blog/message/**' => sub {
             my $send_from_user = session('user');
             $sth = $dbh->prepare("INSERT INTO messages (from_user, to_user, subject, message) VALUES (?, ?, ?, ?)");
             $sth->execute($send_from_user, $send_to_user, params->{'subject'}, params->{'message'}) or die $sth->errstr;
+            $sth = $dbh->prepare("INSERT INTO deleted (from_user, to_user, status) VALUES (?, ?, ?)");
+            $sth->execute($send_from_user, $send_to_user, 0);
             redirect "/Blog/message/$send_from_user";
         } elsif (!defined(session('user'))) {
             set_flash("Login to send a message to the user $send_to_user");
@@ -836,19 +839,28 @@ any ['get', 'post'] => '/Blog/delete_message/*' => sub {
     }   
 
     my $dbh = connect_db(setting('database'));
-    my $sql = 'select id, to_user from messages where id = ?';
+    my $sql = 'select id, to_user, from_user from messages where id = ?';
     my $sth = $dbh->prepare($sql) or die $dbh->errstr;
     $sth->execute($id);
     my $result = ($sth->fetchrow_hashref);
     my $message_user = $result->{'to_user'};
 
-    if ($message_user ne session('user') && session('user') ne ADMIN_USER) {
+    if ( ($message_user ne session('user') && $result->{'from_user'} ne session('user'))  && session('user') ne ADMIN_USER) {
         set_flash("Can only delete messages in own inbox (your user name is: " . session('user') . ")");
         redirect "/Blog/message/" . session('user');
     } else {
-        $sql = 'delete from messages where id = ?';
+        $sql = 'select status from deleted where id = ?';
         $sth = $dbh->prepare($sql) or die $dbh->errstr;
         $sth->execute($id);
+        my $status = ($sth->fetchrow_hashref)->{'status'};
+        if ($status < 2) {
+            $status++;
+        } else {
+            $status = 2
+        }
+        $sql = 'update deleted set status=? WHERE id = ?';
+        $sth = $dbh->prepare($sql) or die $dbh->errstr;
+        $sth->execute($status, $id);
         set_flash("Deleted successfully message with no. " . $id);
         redirect "/Blog/message/" . session('user');
    }
@@ -896,6 +908,8 @@ any ['get', 'post'] => '/Blog/reply_message/*' => sub {
     } else {
         $sth = $dbh->prepare("INSERT INTO messages (from_user, to_user, subject, message) VALUES (?, ?, ?, ?)") or die $dbh->errstr;
         $sth->execute($to_user, $from_user, params->{'subject'}, params->{'message'});
+        $sth = $dbh->prepare("INSERT INTO deleted (from_user, to_user, status) VALUES (?, ?, ?)");
+        $sth->execute($to_user, $from_user, 0);
         set_flash("Message send to $from_user");
         redirect "/Blog/message/" . session('user');
     }

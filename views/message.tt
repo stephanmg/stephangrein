@@ -60,11 +60,11 @@ You have <%unread_messages%> unread messages. <br />
   <% ELSE %>
     <span style="color:black">
   <%END%>
-    <%all_messages.$id.message%> </span> <%IF mbox_folder == "Inbox" %> (Action: <a href="<%delete_message%>/<%all_messages.$id.id%>">delete</a> / <a href="<%reply_message%>/<%all_messages.$id.id%>">reply</a> / <a href="<%toggle_read_message_url%>/<%all_messages.$id.id%>">toggle (un)-read</a>) <%END %>
+    <%all_messages.$id.message%> </span> <%IF mbox_folder == "Inbox" %> (Action: <a href="<%delete_message%>/<%all_messages.$id.id%>">delete</a> / <a href="<%reply_message%>/<%all_messages.$id.id%>">reply</a> / <a href="<%toggle_read_message_url%>/<%all_messages.$id.id%>">toggle (un)-read</a>)<%END%>
     <br />
   </li>
 <%END%>
 <%END%>
 <br />
-Folders: <a href="<%messages_url %>/<%send_to_user%>/Inbox">Inbox</a> / <a href="<%messages_url %>/<%send_to_user%>/Sent"> Sent </a>
+Folders: <a href="<%messages_url %>/<%send_to_user%>/Inbox">Inbox</a> / <a href="<%messages_url %>/<%send_to_user%>/Sent">Sent</a> /  <a href="<%messages_url%>/<%send_to_user%>/Delete">Delete</a>
 </div> <!-- /content-in -->
